@@ -1,13 +1,28 @@
-export default function KpiGrid({ items }) {
+import { formatValue } from "../utils/format";
+
+export default function KPICards({ cards = [] }) {
+  if (!cards.length) return null;
+
   return (
-    <div className="kpi-grid">
-      {items.map((item) => (
-        <article key={item.label} className="glass kpi-card">
-          <div className="kpi-card__value">{item.value}</div>
-          <div className="kpi-card__label">{item.label}</div>
-          {item.note ? <div className="kpi-card__note">{item.note}</div> : null}
+    <section className="kpi-grid">
+      {cards.map((card) => (
+        <article
+          key={card.label}
+          className="kpi-card panel"
+        >
+          <div className="eyebrow">
+            {card.label}
+          </div>
+
+          <div className="kpi-value">
+            {formatValue(card.value, card.type)}
+          </div>
+
+          <div className="kpi-note">
+            {card.note}
+          </div>
         </article>
       ))}
-    </div>
-  )
+    </section>
+  );
 }
