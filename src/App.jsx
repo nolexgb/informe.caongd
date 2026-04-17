@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+
 import Header from "./components/Header";
 import FiltersBar from "./components/FiltersBar";
 import NarrativeHero from "./components/NarrativeHero";
@@ -7,6 +8,7 @@ import MapPanel from "./components/MapPanel";
 import RankingList from "./components/RankingList";
 import DataTable from "./components/DataTable";
 import ComparePanel from "./components/ComparePanel";
+
 import {
   buildCards,
   buildNarrative,
@@ -15,26 +17,24 @@ import {
   buildTopRanking
 } from "./utils/selectors";
 
-const DATA_YEARS = ["2023", "2024"];
+const YEARS = ["2023", "2024"];
 
 export default function App() {
   const [year, setYear] = useState("2024");
   const [section, setSection] = useState("overview");
   const [detail, setDetail] = useState("areas");
   const [metric, setMetric] = useState("investment_eur");
+
   const [dataByYear, setDataByYear] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadAll() {
+    async function loadData() {
       try {
         const entries = await Promise.all(
-          DATA_YEARS.map(async (y) => {
+          YEARS.map(async (y) => {
             const url = `${import.meta.env.BASE_URL}data/data-${y}.json`;
             const res = await fetch(url);
-            if (!res.ok) {
-              throw new Error(`No se pudo cargar ${url}`);
-            }
             const json = await res.json();
             return [y, json];
           })
@@ -42,25 +42,17 @@ export default function App() {
 
         setDataByYear(Object.fromEntries(entries));
       } catch (error) {
-        console.error(error);
+        console.error("Error cargando datos:", error);
       } finally {
         setLoading(false);
       }
     }
 
-    loadAll();
+    loadData();
   }, []);
 
   const current = dataByYear[year];
-  const previous = year === "2024" ? dataByYear["2023"] : null;
-
-  useEffect(() => {
-    if (section === "overview") setDetail("areas");
-    if (section === "andalucia") setDetail("areas");
-    if (section === "international") setDetail("regions");
-    if (section === "social") setDetail("social");
-    if (section === "compare") setDetail("comparison");
-  }, [section]);
+  const previous = dataByYear["2023"];
 
   const narrative = useMemo(
     () => (current ? buildNarrative(current, section) : null),
@@ -89,23 +81,11 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="app-shell loading-screen">
+      <div className="loading-screen">
         <div className="loading-card">
           <div className="eyebrow">CAONGD Data Explorer</div>
           <h1>Cargando plataforma…</h1>
-          <p>Preparando visualizaciones, tablas, rankings y mapas.</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!current) {
-    return (
-      <div className="app-shell loading-screen">
-        <div className="loading-card">
-          <div className="eyebrow">Error</div>
-          <h1>No se han podido cargar los datos</h1>
-          <p>Revisa que existan los archivos en <code>public/data/</code>.</p>
+          <p>Preparando gráficos, rankings, tablas y mapas.</p>
         </div>
       </div>
     );
@@ -113,10 +93,7 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <Header
-        section={section}
-        setSection={setSection}
-      />
+      <Header section={section} setSection={setSection} />
 
       <main className="page-wrap">
         <NarrativeHero narrative={narrative} year={year} />
@@ -124,16 +101,19 @@ export default function App() {
         <FiltersBar
           year={year}
           setYear={setYear}
-          section={section}
-          setSection={setSection}
           detail={detail}
           setDetail={setDetail}
           metric={metric}
           setMetric={setMetric}
+          section={section}
         />
 
         {section === "compare" ? (
-          <ComparePanel current={current} previous={previous} year={year} />
+          <ComparePanel
+            current={current}
+            previous={previous}
+            year={year}
+          />
         ) : (
           <>
             <KPICards cards={cards} />
@@ -143,12 +123,12 @@ export default function App() {
                 <div className="panel-head">
                   <div>
                     <div className="eyebrow">Mapa interactivo</div>
-                    <h2>Lectura territorial</h2>
+                    <h2>Distribución territorial</h2>
                   </div>
                 </div>
+
                 <MapPanel
                   section={section}
-                  detail={detail}
                   rows={rows}
                   metric={metric}
                 />
@@ -161,6 +141,7 @@ export default function App() {
                     <h2>Principales resultados</h2>
                   </div>
                 </div>
+
                 <RankingList rows={ranking} metric={metric} />
               </div>
             </section>
@@ -168,11 +149,12 @@ export default function App() {
             <section className="panel panel-table">
               <div className="panel-head">
                 <div>
-                  <div className="eyebrow">Detalle tabular</div>
+                  <div className="eyebrow">Detalle</div>
                   <h2>Datos consolidados</h2>
                 </div>
               </div>
-              <DataTable columns={columns} rows={rows} />
+
+              <DataTable rows={rows} columns={columns} />
             </section>
           </>
         )}
