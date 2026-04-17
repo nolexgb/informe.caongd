@@ -1,13 +1,19 @@
-export default function StorySteps({ steps }) {
+export default function NarrativeHero({ narrative, year }) {
+  if (!narrative) return null;
+
   return (
-    <section className="story-grid">
-      {steps.map((step, index) => (
-        <article key={step.title} className="glass story-card">
-          <div className="story-card__index">0{index + 1}</div>
-          <h3>{step.title}</h3>
-          <p>{step.copy}</p>
-        </article>
-      ))}
-    </section>
-  )
-}
+    <section className="hero panel">
+      <div className="hero-copy">
+        <div className="eyebrow">
+          Informe interactivo {year}
+        </div>
+
+        <h1>{narrative.title}</h1>
+
+        <p className="hero-summary">
+          {narrative.summary}
+        </p>
+
+        <div className="hero-description">
+          {Array.isArray(narrative.description) &&
+            narrative.description.map((paragraph
