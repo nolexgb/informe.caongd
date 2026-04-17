@@ -1,31 +1,35 @@
-import { NavLink } from 'react-router-dom'
+const ITEMS = [
+  { key: "overview", label: "Resumen" },
+  { key: "andalucia", label: "Andalucía" },
+  { key: "international", label: "Otros países" },
+  { key: "social", label: "Base social" },
+  { key: "compare", label: "Comparador" }
+];
 
-const links = [
-  ['/', 'Resumen'],
-  ['/andalucia', 'Andalucía'],
-  ['/otros-paises', 'Otros países'],
-  ['/base-social', 'Base social'],
-  ['/ongd', 'ONGD'],
-  ['/comparador', 'Comparador']
-]
-
-export default function Header() {
+export default function Header({ section, setSection }) {
   return (
     <header className="topbar">
-      <div className="topbar__brand">
-        <img src="/assets/logo-caongd.svg" alt="CAONGD" className="topbar__logo" />
-        <div>
-          <div className="eyebrow">CAONGD Data Explorer V3</div>
-          <div className="brand-title">Plataforma interactiva del informe</div>
+      <div className="topbar-inner">
+        <div className="brand">
+          <div className="brand-badge">CA</div>
+          <div>
+            <div className="brand-title">CAONGD Data Explorer</div>
+            <div className="brand-subtitle">Plataforma interactiva premium</div>
+          </div>
         </div>
+
+        <nav className="nav">
+          {ITEMS.map((item) => (
+            <button
+              key={item.key}
+              className={`nav-link ${section === item.key ? "active" : ""}`}
+              onClick={() => setSection(item.key)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
       </div>
-      <nav className="topnav">
-        {links.map(([to, label]) => (
-          <NavLink key={to} to={to} className={({ isActive }) => `topnav__link ${isActive ? 'is-active' : ''}`}>
-            {label}
-          </NavLink>
-        ))}
-      </nav>
     </header>
-  )
+  );
 }
