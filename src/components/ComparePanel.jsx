@@ -1,7 +1,4 @@
-import {
-  formatValue,
-  getDelta
-} from "../utils/format";
+import { formatValue, getDelta } from "../utils/format";
 
 function buildItems(current, previous) {
   if (!current || !previous) return [];
@@ -40,11 +37,7 @@ function buildItems(current, previous) {
   ];
 }
 
-export default function ComparePanel({
-  current,
-  previous,
-  year
-}) {
+export default function ComparePanel({ current, previous, year }) {
   const items = buildItems(current, previous);
 
   if (!previous) {
@@ -52,4 +45,47 @@ export default function ComparePanel({
       <section className="panel panel-table">
         <div className="panel-head">
           <div>
-            <div
+            <div className="eyebrow">Comparador anual</div>
+            <h2>No hay año previo cargado</h2>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="panel panel-table">
+      <div className="panel-head">
+        <div>
+          <div className="eyebrow">Comparador anual</div>
+          <h2>{year} frente a 2023</h2>
+        </div>
+      </div>
+
+      <div className="compare-grid">
+        {items.map((item) => {
+          const delta = getDelta(item.current, item.previous);
+          const positive = delta >= 0;
+
+          return (
+            <article key={item.label} className="compare-card">
+              <div className="eyebrow">{item.label}</div>
+
+              <div className="compare-current">
+                {formatValue(item.current, item.type)}
+              </div>
+
+              <div className="compare-previous">
+                Antes: {formatValue(item.previous, item.type)}
+              </div>
+
+              <div className={`compare-delta ${positive ? "up" : "down"}`}>
+                {positive ? "▲" : "▼"} {Math.abs(delta).toFixed(1)}%
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
