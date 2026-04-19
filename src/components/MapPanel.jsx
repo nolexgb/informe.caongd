@@ -46,6 +46,7 @@ export default function MapPanel({
   const points = rows
     .map((row) => {
       const coords = getCoords(row.name);
+
       if (!coords) return null;
 
       return {
@@ -71,7 +72,7 @@ export default function MapPanel({
       className="leaflet-map"
     >
       <TileLayer
-        attribution="&copy; OpenStreetMap"
+        attribution="&copy; OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
