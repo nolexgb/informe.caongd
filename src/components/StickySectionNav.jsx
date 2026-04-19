@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+// src/components/StickySectionNav.jsx
 
 const ITEMS = [
   ["overview", "Resumen"],
@@ -22,20 +22,10 @@ export default function StickySectionNav({
             <button
               key={id}
               onClick={() => setSection(id)}
-              className={`sticky-nav__btn ${
-                active ? "is-active" : ""
-              }`}
+              className={`sticky-nav__btn ${active ? "is-active" : ""}`}
             >
               {active && (
-                <motion.span
-                  layoutId="nav-pill"
-                  className="sticky-nav__pill"
-                  transition={{
-                    type: "spring",
-                    stiffness: 380,
-                    damping: 28
-                  }}
-                />
+                <span className="sticky-nav__pill" />
               )}
 
               <span className="sticky-nav__label">
