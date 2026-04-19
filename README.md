@@ -1,15 +1,14 @@
 # CAONGD Data Explorer
 
-Plataforma interactiva premium para visualizar, comparar y explorar los datos del informe anual de la CAONGD.
+Plataforma interactiva  para visualizar, comparar y explorar los datos de informe.
 
 ## Características
 
 - Navegación superior premium
-- Vista Resumen, Andalucía, Otros países, Base social y Comparador
-- KPIs dinámicos
+- - KPIs dinámicos
 - Ranking automático
 - Tabla consolidada
-- Mapa interactivo con Leaflet
+- Mapa interactivo 
 - Comparativa anual 2023 / 2024
 - Publicación automática en GitHub Pages
 
