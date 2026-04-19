@@ -41,17 +41,28 @@ export default function DataTable({
         <table className="data-table premium-data-table">
           <thead>
             <tr>
-              {columns.map((column) => (
-                <th key={column.key}>{column.label}</th>
+              {columns.map((column, index) => (
+                <th
+                  key={column.key}
+                  className={index === 0 ? "is-primary-col" : ""}
+                >
+                  {column.label}
+                </th>
               ))}
             </tr>
           </thead>
 
           <tbody>
-            {rows.map((row) => (
-              <tr key={row.name}>
-                {columns.map((column) => (
-                  <td key={`${row.name}-${column.key}`}>
+            {rows.map((row, rowIndex) => (
+              <tr
+                key={row.name || rowIndex}
+                className={rowIndex % 2 === 0 ? "is-even" : "is-odd"}
+              >
+                {columns.map((column, colIndex) => (
+                  <td
+                    key={`${row.name || rowIndex}-${column.key}`}
+                    className={colIndex === 0 ? "is-primary-col" : ""}
+                  >
                     {renderCell(row, column)}
                   </td>
                 ))}
