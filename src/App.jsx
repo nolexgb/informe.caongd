@@ -129,6 +129,7 @@ export default function App() {
 
                 <MapPanel
                   section={section}
+                  detail={detail}
                   rows={rows}
                   metric={metric}
                 />
