@@ -133,18 +133,50 @@ export default function App() {
 
   const sectionHeading = getSectionHeading(section);
 
-  if (loading) {
-    return (
-      <div
-        className="loading-screen"
-        style={{
-          minHeight: "100vh",
-          display: "grid",
-          placeItems: "center",
-          padding: "24px",
-          background:
-            "linear-gradient(180deg,#f8fafc 0%,#eef6fc 100%)"
-        }}
+ if (loading) {
+  return (
+    <div className="loading-screen-pro">
+      <div className="loading-screen-pro__glow loading-screen-pro__glow--one" />
+      <div className="loading-screen-pro__glow loading-screen-pro__glow--two" />
+
+      <div className="loading-card-pro panel">
+        <div className="loading-brand">
+          <div className="loading-brand__badge">
+            CA
+          </div>
+
+          <div>
+            <div className="loading-brand__title">
+              CAONGD Data Explorer
+            </div>
+
+            <div className="loading-brand__subtitle">
+              Informe interactivo
+            </div>
+          </div>
+        </div>
+
+        <h1 className="loading-title">
+          Preparando la plataforma…
+        </h1>
+
+        <p className="loading-text">
+          Cargando mapas, rankings, tablas y visualizaciones.
+        </p>
+
+        <div className="loading-bar">
+          <span />
+        </div>
+
+        <div className="loading-skeleton-grid">
+          <div className="loading-skeleton-card" />
+          <div className="loading-skeleton-card" />
+          <div className="loading-skeleton-card" />
+        </div>
+      </div>
+    </div>
+  );
+}
       >
         <div
           className="panel"
