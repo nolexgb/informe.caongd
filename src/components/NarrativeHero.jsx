@@ -1,3 +1,5 @@
+// src/components/NarrativeHero.jsx
+
 import AnimatedCounter from "./AnimatedCounter";
 
 function formatStatValue(stat) {
@@ -6,6 +8,10 @@ function formatStatValue(stat) {
   }
 
   return stat?.value ?? "—";
+}
+
+function isAnimatableValue(value) {
+  return typeof value === "number" && Number.isFinite(value);
 }
 
 function getFallbackStats(year) {
@@ -58,7 +64,7 @@ export default function NarrativeHero({
       <div className="narrative-hero__glow narrative-hero__glow--two" />
 
       <div className="eyebrow narrative-hero__eyebrow">
-        INFORME INTERACTIVO {year}
+        Informe interactivo {year}
       </div>
 
       <h1 className="narrative-hero__title">
@@ -66,15 +72,7 @@ export default function NarrativeHero({
       </h1>
 
       {subtitle ? (
-        <div
-          style={{
-            marginTop: "12px",
-            color: "rgba(255,255,255,.72)",
-            fontSize: "14px",
-            position: "relative",
-            zIndex: 2
-          }}
-        >
+        <div className="narrative-hero__subtitle">
           {subtitle}
         </div>
       ) : null}
@@ -86,22 +84,27 @@ export default function NarrativeHero({
       <div className="narrative-hero__stats">
         {stats.map((stat, index) => {
           const raw = formatStatValue(stat);
+          const canAnimate = isAnimatableValue(raw);
 
           return (
-            <div
+            <article
               key={`${stat.label}-${index}`}
               className="narrative-hero__stat"
             >
               <div className="narrative-hero__stat-value">
                 {stat.prefix || ""}
-                <AnimatedCounter value={raw} />
+                {canAnimate ? (
+                  <AnimatedCounter value={raw} />
+                ) : (
+                  raw
+                )}
                 {stat.suffix || ""}
               </div>
 
               <div className="narrative-hero__stat-label">
                 {stat.label}
               </div>
-            </div>
+            </article>
           );
         })}
       </div>
