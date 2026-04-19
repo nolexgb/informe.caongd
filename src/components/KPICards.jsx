@@ -1,3 +1,5 @@
+// src/components/KPICards.jsx
+
 import { formatValue } from "../utils/format";
 import MotionSection from "./MotionSection";
 
@@ -6,26 +8,38 @@ export default function KPICards({ cards = [] }) {
 
   return (
     <section className="kpi-grid section-space">
-      {cards.map((card, index) => (
-        <MotionSection
-          key={card.label}
-          delay={index * 0.06}
-        >
-          <article className="kpi-card panel premium-kpi-card">
-            <div className="eyebrow">
-              {card.label}
-            </div>
+      {cards.map((card, index) => {
+        const featured = index === 0;
 
-            <div className="kpi-value premium-kpi-value">
-              {formatValue(card.value, card.type)}
-            </div>
+        return (
+          <MotionSection
+            key={card.label}
+            delay={index * 0.05}
+          >
+            <article
+              className={`kpi-card panel premium-kpi-card ${
+                featured ? "is-featured" : ""
+              }`}
+            >
+              <div className="kpi-topline">
+                <span className="eyebrow">
+                  {card.label}
+                </span>
+              </div>
 
-            <div className="kpi-note premium-kpi-note">
-              {card.note}
-            </div>
-          </article>
-        </MotionSection>
-      ))}
+              <div className="kpi-value premium-kpi-value">
+                {formatValue(card.value, card.type)}
+              </div>
+
+              <p className="kpi-note premium-kpi-note">
+                {card.note}
+              </p>
+
+              <div className="kpi-accent-line" />
+            </article>
+          </MotionSection>
+        );
+      })}
     </section>
   );
 }
