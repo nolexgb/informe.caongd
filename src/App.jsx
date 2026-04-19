@@ -1,3 +1,5 @@
+// src/App.jsx
+
 import { useEffect, useMemo, useState } from "react";
 
 import "./styles/theme.css";
@@ -142,9 +144,7 @@ export default function App() {
 
         <div className="loading-card-pro panel">
           <div className="loading-brand">
-            <div className="loading-brand__badge">
-              CA
-            </div>
+            <div className="loading-brand__badge">CA</div>
 
             <div>
               <div className="loading-brand__title">
@@ -180,13 +180,7 @@ export default function App() {
   }
 
   return (
-    <div
-      className="app-shell"
-      style={{
-        background:
-          "radial-gradient(circle at top right, rgba(140,196,240,.18), transparent 30%)"
-      }}
-    >
+    <div className="app-shell">
       <Header />
 
       <div className="page-wrap">
@@ -198,38 +192,19 @@ export default function App() {
         setSection={setSection}
       />
 
-      <main
-        className="page-wrap"
-        style={{ paddingBottom: "60px" }}
-      >
+      <main className="page-wrap app-main">
         <MotionSection delay={0.05}>
           <section className="section-space">
-            <div
-              className="panel"
-              style={{
-                padding: "24px",
-                borderRadius: "24px",
-                background:
-                  "linear-gradient(180deg,#ffffff 0%,#f8fbfe 100%)"
-              }}
-            >
+            <div className="panel panel-section panel-soft">
               <div className="eyebrow">
                 {sectionHeading.eyebrow}
               </div>
-              <h2
-                style={{
-                  marginTop: "10px",
-                  fontSize: "clamp(28px,4vw,44px)"
-                }}
-              >
+
+              <h2 className="section-block__title">
                 {sectionHeading.title}
               </h2>
-              <p
-                style={{
-                  marginTop: "12px",
-                  maxWidth: "760px"
-                }}
-              >
+
+              <p className="section-block__text">
                 {sectionHeading.text}
               </p>
             </div>
@@ -255,6 +230,7 @@ export default function App() {
                 current={current}
                 previous={previous}
                 year={year}
+                previousYear="2023"
               />
             </section>
           </MotionSection>
@@ -264,39 +240,24 @@ export default function App() {
 
             <section className="content-grid section-space">
               <MotionSection delay={0.12}>
-                <div
-                  className="panel panel-map"
-                  style={{
-                    padding: "24px",
-                    borderRadius: "24px",
-                    minHeight: "560px"
-                  }}
-                >
+                <div className="panel panel-map panel-section panel-soft panel-primary panel-large">
                   <div className="panel-head">
                     <div className="eyebrow">
                       Mapa interactivo
                     </div>
-                    <h2
-                      style={{
-                        marginTop: "8px",
-                        fontSize: "32px"
-                      }}
-                    >
+
+                    <h2 className="panel-title">
                       Distribución territorial
                     </h2>
-                    <p
-                      style={{
-                        marginTop: "12px",
-                        maxWidth: "620px"
-                      }}
-                    >
+
+                    <p className="panel-text panel-text--wide">
                       Visualiza la distribución territorial de la
                       actividad según la sección, la vista y la
                       métrica seleccionada.
                     </p>
                   </div>
 
-                  <div style={{ marginTop: "18px" }}>
+                  <div className="panel-body-spaced">
                     <MapPanel
                       section={section}
                       detail={detail}
@@ -308,30 +269,21 @@ export default function App() {
               </MotionSection>
 
               <MotionSection delay={0.18}>
-                <div
-                  className="panel panel-ranking"
-                  style={{
-                    padding: "24px",
-                    borderRadius: "24px"
-                  }}
-                >
+                <div className="panel panel-ranking panel-section panel-soft panel-secondary">
                   <div className="panel-head">
                     <div className="eyebrow">Ranking</div>
-                    <h2
-                      style={{
-                        marginTop: "8px",
-                        fontSize: "32px"
-                      }}
-                    >
+
+                    <h2 className="panel-title">
                       Principales resultados
                     </h2>
-                    <p style={{ marginTop: "12px" }}>
+
+                    <p className="panel-text">
                       Identifica rápidamente los territorios o
                       categorías con mayor peso relativo.
                     </p>
                   </div>
 
-                  <div style={{ marginTop: "18px" }}>
+                  <div className="panel-body-spaced">
                     <RankingList
                       rows={ranking}
                       metric={metric}
@@ -342,36 +294,21 @@ export default function App() {
             </section>
 
             <MotionSection delay={0.22}>
-              <section
-                className="panel panel-table section-space"
-                style={{
-                  padding: "24px",
-                  borderRadius: "24px"
-                }}
-              >
+              <section className="panel panel-table panel-section panel-soft panel-tertiary section-space">
                 <div className="panel-head">
                   <div className="eyebrow">Detalle</div>
-                  <h2
-                    style={{
-                      marginTop: "8px",
-                      fontSize: "32px"
-                    }}
-                  >
+
+                  <h2 className="panel-title">
                     Datos consolidados
                   </h2>
-                  <p
-                    style={{
-                      marginTop: "12px",
-                      maxWidth: "760px"
-                    }}
-                  >
-                    Consulta el detalle estructurado de cada vista
-                    en formato tabular, con una lectura clara y
-                    trazable.
+
+                  <p className="panel-text panel-text--wide">
+                    Consulta el detalle estructurado de cada vista en
+                    formato tabular, con una lectura clara y trazable.
                   </p>
                 </div>
 
-                <div style={{ marginTop: "18px" }}>
+                <div className="panel-body-spaced">
                   <DataTable
                     rows={rows}
                     columns={columns}
