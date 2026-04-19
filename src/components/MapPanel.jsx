@@ -25,11 +25,22 @@ function getMapConfig(section) {
   };
 }
 
+const GEO_DETAILS = ["provinces", "countries", "regions"];
+
 export default function MapPanel({
   section,
+  detail,
   rows = [],
   metric = "investment_eur"
 }) {
+  if (!GEO_DETAILS.includes(detail)) {
+    return (
+      <div className="map-fallback">
+        Esta vista no es geográfica.
+      </div>
+    );
+  }
+
   const config = getMapConfig(section);
 
   const points = rows
@@ -71,11 +82,7 @@ export default function MapPanel({
           row.total ??
           1;
 
-        const radius = normalizeMetric(
-          value,
-          8,
-          28
-        );
+        const radius = normalizeMetric(value, 8, 28);
 
         return (
           <CircleMarker
@@ -92,7 +99,6 @@ export default function MapPanel({
             <Popup>
               <strong>{row.name}</strong>
               <br />
-
               {metric}:{" "}
               {formatValue(
                 value,
