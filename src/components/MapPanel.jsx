@@ -1,3 +1,5 @@
+// src/components/MapPanel.jsx
+
 import {
   MapContainer,
   TileLayer,
@@ -61,9 +63,9 @@ export default function MapPanel({
   if (!GEO_DETAILS.includes(detail)) {
     return (
       <div className="map-fallback">
-        <div>
+        <div className="map-fallback__content">
           <strong>Vista no geográfica</strong>
-          <p style={{ marginTop: "8px" }}>
+          <p className="map-fallback__text">
             Esta vista no representa territorios con coordenadas.
           </p>
         </div>
@@ -95,9 +97,9 @@ export default function MapPanel({
   if (!points.length) {
     return (
       <div className="map-fallback">
-        <div>
+        <div className="map-fallback__content">
           <strong>Sin coordenadas disponibles</strong>
-          <p style={{ marginTop: "8px" }}>
+          <p className="map-fallback__text">
             Los datos de esta vista no incluyen ubicaciones mapeables.
           </p>
         </div>
@@ -150,7 +152,7 @@ export default function MapPanel({
           );
 
           const opacity =
-            0.45 + (row.value / maxValue) * 0.4;
+            0.42 + (row.value / maxValue) * 0.42;
 
           return (
             <CircleMarker
@@ -160,7 +162,7 @@ export default function MapPanel({
               pathOptions={{
                 color: "#ffffff",
                 weight: 1.5,
-                fillColor: "#2374b7",
+                fillColor: "#2f7a6c",
                 fillOpacity: Math.min(opacity, 0.88)
               }}
             >
