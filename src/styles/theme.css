@@ -104,6 +104,21 @@ button {
 }
 
 /* =========================
+   APP
+========================= */
+
+.app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(166,202,34,.10), transparent 30%),
+    linear-gradient(180deg,#f8fcfa 0%,#eef7f3 100%);
+}
+
+.app-main {
+  padding-bottom: 64px;
+}
+
+/* =========================
    LAYOUT
 ========================= */
 
@@ -167,6 +182,63 @@ p {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.panel-section {
+  padding: 24px;
+}
+
+.panel-soft {
+  background: linear-gradient(180deg,#ffffff 0%,#f8fcfa 100%);
+}
+
+.panel-primary {
+  box-shadow: var(--shadow-card);
+}
+
+.panel-secondary {
+  box-shadow: var(--shadow-soft);
+}
+
+.panel-tertiary {
+  box-shadow: var(--shadow-soft);
+}
+
+.panel-large {
+  min-height: 560px;
+}
+
+.panel-title {
+  margin-top: 8px;
+  font-size: clamp(28px,4vw,34px);
+  color: var(--brand-900);
+}
+
+.panel-text {
+  margin-top: 12px;
+}
+
+.panel-text--wide {
+  max-width: 760px;
+}
+
+.panel-body-spaced {
+  margin-top: 18px;
+}
+
+/* =========================
+   SECTION INTRO
+========================= */
+
+.section-block__title {
+  margin-top: 10px;
+  font-size: clamp(28px,4vw,44px);
+  color: var(--brand-900);
+}
+
+.section-block__text {
+  margin-top: 12px;
+  max-width: 760px;
 }
 
 /* =========================
@@ -590,6 +662,158 @@ p {
 }
 
 /* =========================
+   LOADING SCREEN
+========================= */
+
+.loading-screen-pro {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, rgba(166,202,34,.10), transparent 28%),
+    linear-gradient(180deg,#f8fcfa 0%,#eef7f3 100%);
+}
+
+.loading-card-pro {
+  width: min(720px, 100%);
+  padding: 34px;
+  position: relative;
+  z-index: 2;
+}
+
+.loading-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.loading-brand__badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-weight: 800;
+  background: linear-gradient(
+    135deg,
+    var(--lime-800),
+    var(--lime-500)
+  );
+}
+
+.loading-brand__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--brand-900);
+}
+
+.loading-brand__subtitle {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.loading-title {
+  margin-top: 26px;
+  font-size: clamp(30px,5vw,48px);
+  color: var(--brand-900);
+}
+
+.loading-text {
+  margin-top: 14px;
+  max-width: 560px;
+}
+
+.loading-bar {
+  margin-top: 26px;
+  height: 10px;
+  border-radius: 999px;
+  background: #e8f0ed;
+  overflow: hidden;
+}
+
+.loading-bar span {
+  display: block;
+  height: 100%;
+  width: 42%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--brand-700),
+    var(--lime-600)
+  );
+  animation: loadingBar 1.4s ease infinite;
+}
+
+.loading-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
+  margin-top: 26px;
+}
+
+.loading-skeleton-card {
+  height: 96px;
+  border-radius: 18px;
+  background: linear-gradient(
+    90deg,
+    #f2f7f5 25%,
+    #ffffff 50%,
+    #f2f7f5 75%
+  );
+  background-size: 220% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+.loading-screen-pro__glow {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.loading-screen-pro__glow--one {
+  top: -120px;
+  right: -120px;
+  width: 280px;
+  height: 280px;
+  background: rgba(166,202,34,.10);
+}
+
+.loading-screen-pro__glow--two {
+  bottom: -100px;
+  left: -100px;
+  width: 240px;
+  height: 240px;
+  background: rgba(47,122,108,.08);
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes loadingBar {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  100% {
+    transform: translateX(260%);
+  }
+}
+
+/* =========================
    RESPONSIVE
 ========================= */
 
@@ -619,6 +843,10 @@ p {
   .narrative-hero {
     padding: 40px;
   }
+
+  .loading-skeleton-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -626,7 +854,8 @@ p {
     width: min(100% - 20px, var(--page-max));
   }
 
-  .narrative-hero {
+  .narrative-hero,
+  .loading-card-pro {
     padding: 28px;
   }
 
