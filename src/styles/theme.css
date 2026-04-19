@@ -1,5 +1,5 @@
 :root {
-  /* CAONGD Brand */
+  /* Brand */
   --brand-950: #12332f;
   --brand-900: #184640;
   --brand-850: #1f564e;
@@ -10,7 +10,7 @@
   --brand-300: #a9d3ca;
   --brand-100: #ebf6f3;
 
-  /* Logo Lime */
+  /* Lime logo accent */
   --lime-900: #6f9200;
   --lime-800: #84ab0b;
   --lime-700: #96bd16;
@@ -32,9 +32,11 @@
   --ink-100: #edf3f1;
   --ink-50: #f7fbfa;
 
+  /* Semantic */
   --success-600: #1f7a3d;
   --danger-600: #b42318;
 
+  /* Surfaces */
   --bg: #f6faf8;
   --surface: #ffffff;
   --surface-alt: #f8fcfa;
@@ -43,6 +45,7 @@
   --muted: #5b6b67;
   --border: #dce8e2;
 
+  /* Radius */
   --radius-2xl: 28px;
   --radius-xl: 24px;
   --radius-lg: 18px;
@@ -50,6 +53,7 @@
   --radius-sm: 10px;
   --radius-pill: 999px;
 
+  /* Shadows */
   --shadow-soft: 0 10px 30px rgba(24, 70, 64, 0.08);
   --shadow-card: 0 20px 45px rgba(24, 70, 64, 0.10);
   --shadow-float: 0 26px 60px rgba(24, 70, 64, 0.14);
@@ -58,7 +62,9 @@
   --page-max: 1400px;
 }
 
-/* Reset */
+/* =========================
+   RESET
+========================= */
 
 *,
 *::before,
@@ -75,14 +81,14 @@ body {
   font-family: Inter, system-ui, sans-serif;
   background:
     radial-gradient(circle at top right, rgba(166,202,34,.08), transparent 24%),
-    linear-gradient(180deg, #f8fcfa 0%, #eef7f3 100%);
+    linear-gradient(180deg,#f8fcfa 0%,#eef7f3 100%);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
 
 img {
-  max-width: 100%;
   display: block;
+  max-width: 100%;
 }
 
 button,
@@ -96,7 +102,9 @@ button {
   border: none;
 }
 
-/* Layout */
+/* =========================
+   LAYOUT
+========================= */
 
 .page-wrap {
   width: min(var(--page-max), calc(100% - 48px));
@@ -119,7 +127,9 @@ button {
   gap: 22px;
 }
 
-/* Typography */
+/* =========================
+   TYPOGRAPHY
+========================= */
 
 h1,h2,h3 {
   margin: 0;
@@ -141,10 +151,12 @@ p {
   color: var(--lime-800);
 }
 
-/* Panels */
+/* =========================
+   PANELS
+========================= */
 
 .panel {
-  background: linear-gradient(180deg,#fff,#f8fcfa);
+  background: linear-gradient(180deg,#ffffff 0%,#f8fcfa 100%);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-soft);
@@ -156,12 +168,14 @@ p {
   gap: 8px;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 
 .institutional-header {
   position: sticky;
   top: 0;
-  z-index: 80;
+  z-index: 90;
   backdrop-filter: blur(18px);
   background: rgba(255,255,255,.84);
   border-bottom: 1px solid rgba(220,232,226,.92);
@@ -187,8 +201,8 @@ p {
   border-radius: 16px;
   display: grid;
   place-items: center;
-  font-weight: 800;
   color: white;
+  font-weight: 800;
   background: linear-gradient(
     135deg,
     var(--lime-800),
@@ -222,7 +236,9 @@ p {
   font-weight: 800;
 }
 
-/* HERO */
+/* =========================
+   HERO
+========================= */
 
 .narrative-hero {
   position: relative;
@@ -282,33 +298,14 @@ p {
   color: rgba(255,255,255,.9);
 }
 
-.narrative-hero__glow {
-  position: absolute;
-  border-radius: 50%;
-}
-
-.narrative-hero__glow--one {
-  top: -90px;
-  right: -90px;
-  width: 240px;
-  height: 240px;
-  background: rgba(255,255,255,.06);
-}
-
-.narrative-hero__glow--two {
-  left: -60px;
-  bottom: -60px;
-  width: 180px;
-  height: 180px;
-  background: rgba(255,255,255,.04);
-}
-
-/* STICKY NAV */
+/* =========================
+   STICKY NAV
+========================= */
 
 .sticky-nav {
   position: sticky;
   top: 82px;
-  z-index: 70;
+  z-index: 80;
   margin-top: 18px;
   background: rgba(246,250,248,.84);
   backdrop-filter: blur(12px);
@@ -368,7 +365,9 @@ p {
   z-index: 2;
 }
 
-/* KPI */
+/* =========================
+   KPI
+========================= */
 
 .kpi-grid {
   display: grid;
@@ -402,8 +401,8 @@ p {
 }
 
 .premium-kpi-card.is-featured .premium-kpi-value,
-.premium-kpi-card.is-featured .eyebrow,
-.premium-kpi-card.is-featured .premium-kpi-note {
+.premium-kpi-card.is-featured .premium-kpi-note,
+.premium-kpi-card.is-featured .eyebrow {
   color: white;
 }
 
@@ -421,7 +420,6 @@ p {
 .kpi-note {
   margin-top: 16px;
   font-size: 14px;
-  line-height: 1.55;
 }
 
 .kpi-accent-line {
@@ -438,7 +436,77 @@ p {
   );
 }
 
-/* TABLE */
+/* =========================
+   COMPARE PANEL
+========================= */
+
+.compare-panel {
+  padding: 28px;
+  border-radius: 24px;
+}
+
+.compare-panel__title {
+  margin-top: 8px;
+  font-size: clamp(30px,4vw,40px);
+  color: var(--brand-900);
+}
+
+.compare-panel__intro {
+  margin-top: 12px;
+  max-width: 760px;
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.compare-card {
+  padding: 24px;
+  border-radius: 22px;
+  background: linear-gradient(180deg,#fff,#f8fcfa);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+.compare-current {
+  margin-top: 12px;
+  font-size: clamp(30px,4vw,44px);
+  font-weight: 800;
+  color: var(--brand-900);
+}
+
+.compare-previous {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.compare-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.compare-delta.up {
+  background: rgba(31,122,61,.12);
+  color: var(--success-600);
+}
+
+.compare-delta.down {
+  background: rgba(180,35,24,.10);
+  color: var(--danger-600);
+}
+
+/* =========================
+   TABLE
+========================= */
 
 .table-wrap {
   width: 100%;
@@ -446,6 +514,10 @@ p {
   border-radius: 18px;
   border: 1px solid var(--border);
   background: white;
+}
+
+.premium-table-wrap {
+  box-shadow: var(--shadow-soft);
 }
 
 .data-table,
@@ -472,27 +544,24 @@ p {
   color: var(--ink-700);
 }
 
+.premium-data-table .is-primary-col {
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.premium-data-table .is-numeric-col {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 .data-table tbody tr:hover td,
 .premium-data-table tbody tr:hover td {
   background: rgba(166,202,34,.05);
 }
 
-/* Ranking */
-
-.premium-ranking-bar span,
-.ranking-bar span {
-  display: block;
-  height: 8px;
-  border-radius: 999px;
-  background: linear-gradient(
-    90deg,
-    var(--brand-900),
-    var(--brand-700),
-    var(--lime-600)
-  );
-}
-
-/* Empty */
+/* =========================
+   EMPTY STATE
+========================= */
 
 .empty-state {
   padding: 40px;
@@ -502,7 +571,9 @@ p {
   border: 1px solid var(--border);
 }
 
-/* Responsive */
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (max-width: 1024px) {
   .page-wrap {
