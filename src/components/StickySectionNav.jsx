@@ -1,3 +1,5 @@
+// src/components/StickySectionNav.jsx
+
 const ITEMS = [
   ["overview", "Resumen"],
   ["andalucia", "Andalucía"],
@@ -11,7 +13,7 @@ export default function StickySectionNav({
   setSection
 }) {
   return (
-    <nav className="sticky-nav">
+    <nav className="sticky-nav" aria-label="Secciones del informe">
       <div className="page-wrap sticky-nav__inner">
         {ITEMS.map(([id, label]) => {
           const active = section === id;
@@ -19,12 +21,12 @@ export default function StickySectionNav({
           return (
             <button
               key={id}
+              type="button"
               onClick={() => setSection(id)}
               className={`sticky-nav__btn ${active ? "is-active" : ""}`}
+              aria-pressed={active}
             >
-              {active && (
-                <span className="sticky-nav__pill" />
-              )}
+              {active && <span className="sticky-nav__pill" />}
 
               <span className="sticky-nav__label">
                 {label}
