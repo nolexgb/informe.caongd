@@ -45,6 +45,8 @@ export default function NarrativeHero({
     narrative?.text ||
     "Explora el trabajo en Andalucía, la acción internacional, la financiación y la base social mediante una experiencia visual premium basada en datos.";
 
+  const subtitle = narrative?.subtitle || "";
+
   const stats =
     Array.isArray(narrative?.stats) && narrative.stats.length
       ? narrative.stats
@@ -63,17 +65,31 @@ export default function NarrativeHero({
         {title}
       </h1>
 
+      {subtitle ? (
+        <div
+          style={{
+            marginTop: "12px",
+            color: "rgba(255,255,255,.72)",
+            fontSize: "14px",
+            position: "relative",
+            zIndex: 2
+          }}
+        >
+          {subtitle}
+        </div>
+      ) : null}
+
       <p className="narrative-hero__text">
         {text}
       </p>
 
       <div className="narrative-hero__stats">
-        {stats.map((stat) => {
+        {stats.map((stat, index) => {
           const raw = formatStatValue(stat);
 
           return (
             <div
-              key={stat.label}
+              key={`${stat.label}-${index}`}
               className="narrative-hero__stat"
             >
               <div className="narrative-hero__stat-value">
