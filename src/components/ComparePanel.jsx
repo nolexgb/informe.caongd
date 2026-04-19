@@ -40,26 +40,51 @@ function buildItems(current, previous) {
   ];
 }
 
+function getBadge(delta) {
+  if (delta > 0) {
+    return {
+      symbol: "▲",
+      text: "Crecimiento",
+      className: "up"
+    };
+  }
+
+  if (delta < 0) {
+    return {
+      symbol: "▼",
+      text: "Descenso",
+      className: "down"
+    };
+  }
+
+  return {
+    symbol: "•",
+    text: "Estable",
+    className: "flat"
+  };
+}
+
 export default function ComparePanel({
   current,
   previous,
   year,
-  previousYear = "2023"
+  previousYear
 }) {
   const items = buildItems(current, previous);
 
   if (!previous) {
     return (
-      <section className="panel panel-table compare-panel">
-        <div className="panel-head compare-panel__head">
+      <section className="panel panel-table compare-panel compare-panel--empty">
+        <div className="panel-head">
           <div>
             <div className="eyebrow">Comparador anual</div>
-            <h2 className="compare-panel__title">
-              No hay año previo cargado
+
+            <h2 className="panel-title">
+              No hay año comparativo disponible
             </h2>
-            <p className="compare-panel__intro">
-              No se puede construir la comparativa porque no hay datos
-              anteriores disponibles.
+
+            <p className="panel-text">
+              No se puede construir la comparativa porque no existen datos del ejercicio alternativo.
             </p>
           </div>
         </div>
@@ -68,16 +93,18 @@ export default function ComparePanel({
   }
 
   return (
-    <section className="panel panel-table compare-panel">
-      <div className="panel-head compare-panel__head">
+    <section className="panel panel-table compare-panel compare-panel--premium">
+      <div className="panel-head">
         <div>
           <div className="eyebrow">Comparador anual</div>
-          <h2 className="compare-panel__title">
+
+          <h2 className="panel-title">
             {year} frente a {previousYear}
           </h2>
-          <p className="compare-panel__intro">
-            Esta sección resume la evolución de los principales
-            indicadores entre el ejercicio actual y el año base.
+
+          <p className="panel-text panel-text--wide">
+            Lectura ejecutiva de evolución entre ejercicios disponibles.
+            Detecta crecimiento, descensos y estabilidad en los principales indicadores.
           </p>
         </div>
       </div>
@@ -85,8 +112,7 @@ export default function ComparePanel({
       <div className="compare-grid premium-compare-grid">
         {items.map((item, index) => {
           const delta = getDelta(item.current, item.previous);
-          const positive = delta >= 0;
-          const neutral = delta === 0;
+          const badge = getBadge(delta);
 
           return (
             <MotionSection
@@ -95,26 +121,29 @@ export default function ComparePanel({
               y={20}
             >
               <article className="compare-card premium-compare-card">
-                <div className="eyebrow">{item.label}</div>
+                <div className="compare-card__top">
+                  <div className="eyebrow">{item.label}</div>
+
+                  <span
+                    className={`compare-status compare-status--${badge.className}`}
+                  >
+                    {badge.symbol} {badge.text}
+                  </span>
+                </div>
 
                 <div className="compare-current">
                   {formatValue(item.current, item.type)}
                 </div>
 
                 <div className="compare-previous">
-                  {previousYear}: {formatValue(item.previous, item.type)}
+                  {previousYear}:{" "}
+                  {formatValue(item.previous, item.type)}
                 </div>
 
                 <div
-                  className={`compare-delta ${
-                    neutral
-                      ? "neutral"
-                      : positive
-                      ? "up"
-                      : "down"
-                  }`}
+                  className={`compare-delta ${badge.className}`}
                 >
-                  {neutral ? "•" : positive ? "▲" : "▼"}{" "}
+                  {badge.symbol}{" "}
                   {Math.abs(delta).toFixed(1)}%
                 </div>
               </article>
