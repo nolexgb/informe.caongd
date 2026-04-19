@@ -371,4 +371,73 @@ tr:hover td {
   td {
     padding: 12px;
   }
+.map-shell {
+  position: relative;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+}
+
+.premium-table-wrap {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbfe 100%);
+}
+
+.data-table,
+.premium-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.data-table thead th,
+.premium-data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.data-table th,
+.data-table td,
+.premium-data-table th,
+.premium-data-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.data-table th,
+.premium-data-table th {
+  background: #f8fbfe;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--slate-700);
+  white-space: nowrap;
+}
+
+.data-table td,
+.premium-data-table td {
+  color: var(--text);
+  background: white;
+}
+
+.data-table tbody tr:hover td,
+.premium-data-table tbody tr:hover td {
+  background: rgba(46, 142, 214, 0.035);
+}
+
+.panel-map,
+.panel-ranking,
+.panel-table {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbfe 100%);
+}
+
+@media (max-width: 900px) {
+  .data-table,
+  .premium-data-table {
+    min-width: 640px;
+  }
 }
