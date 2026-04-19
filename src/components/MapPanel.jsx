@@ -42,8 +42,14 @@ function getMetricLabel(metric) {
     case "total":
       return "Total";
     default:
-      return metric;
+      return "Valor";
   }
+}
+
+function getMetricType(metric) {
+  return metric === "investment_eur"
+    ? "currency"
+    : "number";
 }
 
 export default function MapPanel({
@@ -72,9 +78,16 @@ export default function MapPanel({
       const coords = getCoords(row.name);
       if (!coords) return null;
 
+      const value =
+        row[metric] ??
+        row.projects ??
+        row.total ??
+        1;
+
       return {
         ...row,
-        coords
+        coords,
+        value
       };
     })
     .filter(Boolean);
@@ -92,8 +105,32 @@ export default function MapPanel({
     );
   }
 
+  const maxValue =
+    Math.max(...points.map((point) => point.value), 1);
+
+  const metricLabel = getMetricLabel(metric);
+  const metricType = getMetricType(metric);
+
   return (
     <div className="map-shell">
+      <div className="map-legend">
+        <div className="map-legend__title">
+          Intensidad por {metricLabel.toLowerCase()}
+        </div>
+
+        <div className="map-legend__scale">
+          <span className="map-legend__dot map-legend__dot--sm" />
+          <span className="map-legend__dot map-legend__dot--md" />
+          <span className="map-legend__dot map-legend__dot--lg" />
+        </div>
+
+        <div className="map-legend__labels">
+          <span>Baja</span>
+          <span>Media</span>
+          <span>Alta</span>
+        </div>
+      </div>
+
       <MapContainer
         center={config.center}
         zoom={config.zoom}
@@ -106,13 +143,14 @@ export default function MapPanel({
         />
 
         {points.map((row) => {
-          const value =
-            row[metric] ??
-            row.projects ??
-            row.total ??
-            1;
+          const radius = normalizeMetric(
+            row.value,
+            8,
+            28
+          );
 
-          const radius = normalizeMetric(value, 8, 28);
+          const opacity =
+            0.45 + (row.value / maxValue) * 0.4;
 
           return (
             <CircleMarker
@@ -121,23 +159,21 @@ export default function MapPanel({
               radius={radius}
               pathOptions={{
                 color: "#ffffff",
-                weight: 1.2,
+                weight: 1.5,
                 fillColor: "#2374b7",
-                fillOpacity: 0.82
+                fillOpacity: Math.min(opacity, 0.88)
               }}
             >
               <Popup>
-                <div style={{ minWidth: "160px" }}>
-                  <strong>{row.name}</strong>
-                  <div style={{ marginTop: "8px" }}>
-                    {getMetricLabel(metric)}:{" "}
+                <div className="map-popup">
+                  <div className="map-popup__title">
+                    {row.name}
+                  </div>
+
+                  <div className="map-popup__metric">
+                    <span>{metricLabel}</span>
                     <strong>
-                      {formatValue(
-                        value,
-                        metric === "investment_eur"
-                          ? "currency"
-                          : "number"
-                      )}
+                      {formatValue(row.value, metricType)}
                     </strong>
                   </div>
                 </div>
