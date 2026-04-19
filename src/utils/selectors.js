@@ -1,3 +1,5 @@
+// src/utils/selectors.js
+
 const LABELS = {
   name: "Nombre",
   countries: "Países",
@@ -15,18 +17,47 @@ function safe(value, fallback = 0) {
   return value ?? fallback;
 }
 
+function topLabel(rows = [], metric = "investment_eur") {
+  const valid = rows.filter(
+    (row) => typeof row?.[metric] === "number"
+  );
+
+  if (!valid.length) return null;
+
+  const best = [...valid].sort(
+    (a, b) => b[metric] - a[metric]
+  )[0];
+
+  return best?.name || null;
+}
+
+/* =====================================
+   NARRATIVE
+===================================== */
+
 export function buildNarrative(data, section) {
   if (!data) return null;
 
   if (section === "andalucia") {
+    const topProvince = topLabel(
+      data?.andalusia_work?.province_source_table,
+      "investment_eur"
+    );
+
     return {
       title:
         data?.andalusia_work?.tool_intro?.title ||
         "Trabajo en Andalucía",
-      subtitle: "Distribución territorial y áreas de trabajo",
+
+      subtitle:
+        topProvince
+          ? `${topProvince} lidera la inversión territorial`
+          : "Distribución territorial y áreas de trabajo",
+
       text:
         data?.andalusia_work?.tool_intro?.summary ||
         "Explora automáticamente las cifras clave del trabajo en Andalucía mediante una lectura territorial, temática e institucional.",
+
       stats: [
         {
           label: "ONGD activas",
@@ -50,11 +81,22 @@ export function buildNarrative(data, section) {
   }
 
   if (section === "international") {
+    const topCountry = topLabel(
+      data?.international_work?.top_countries_investment,
+      "investment_eur"
+    );
+
     return {
       title: "Trabajo en otros países",
-      subtitle: "Cobertura geográfica y alcance internacional",
+
+      subtitle:
+        topCountry
+          ? `${topCountry} encabeza la inversión internacional`
+          : "Cobertura geográfica y alcance internacional",
+
       text:
         "Consulta cobertura internacional, inversión, proyectos y presencia territorial mediante una exploración dinámica por países, regiones y organizaciones.",
+
       stats: [
         {
           label: "Países",
@@ -80,9 +122,13 @@ export function buildNarrative(data, section) {
   if (section === "social") {
     return {
       title: "Base social e implantación",
-      subtitle: "Estructura humana y capacidad organizativa",
+
+      subtitle:
+        "Estructura humana y capacidad organizativa",
+
       text:
         "Conoce la dimensión social de las entidades participantes a través de indicadores de membresía, voluntariado, personal y órganos de gobierno.",
+
       stats: [
         {
           label: "Personas socias",
@@ -107,9 +153,13 @@ export function buildNarrative(data, section) {
   if (section === "compare") {
     return {
       title: "Comparador anual",
-      subtitle: "Cambios y evolución entre ejercicios",
+
+      subtitle:
+        "Cambios y evolución entre ejercicios",
+
       text:
         "Compara automáticamente indicadores entre ejercicios para detectar aumentos, descensos y continuidad en las magnitudes principales.",
+
       stats: [
         {
           label: "Año actual",
@@ -124,55 +174,76 @@ export function buildNarrative(data, section) {
   }
 
   return {
-    title: "Sistema premium de publicación de datos CAONGD",
-    subtitle: "Plataforma interactiva institucional",
+    title:
+      "Sistema premium de publicación de datos CAONGD",
+
+    subtitle:
+      "Plataforma interactiva institucional",
+
     text:
       "Visualiza, compara y explora los datos del informe anual mediante una experiencia integrada de narrativa, mapas, rankings, filtros y tablas.",
+
     stats: [
       {
         label: "Entidades participantes",
-        rawValue: safe(data?.summary?.entities_participating)
+        rawValue: safe(
+          data?.summary?.entities_participating
+        )
       },
       {
         label: "ONGD participantes",
-        rawValue: safe(data?.summary?.ongd_participants)
+        rawValue: safe(
+          data?.summary?.ongd_participants
+        )
       },
       {
         label: "Trabajo Andalucía",
-        rawValue: safe(data?.andalusia_work?.projects)
+        rawValue: safe(
+          data?.andalusia_work?.projects
+        )
       },
       {
         label: "Trabajo internacional",
-        rawValue: safe(data?.international_work?.projects)
+        rawValue: safe(
+          data?.international_work?.projects
+        )
       }
     ]
   };
 }
+
+/* =====================================
+   KPI CARDS
+===================================== */
 
 export function buildCards(data, section) {
   if (section === "andalucia") {
     return [
       {
         label: "ONGD activas",
-        value: data.andalusia_work.ongd,
+        value: safe(data?.andalusia_work?.ongd),
         type: "number",
         note: "Entidades con actividad en Andalucía"
       },
       {
         label: "Proyectos",
-        value: data.andalusia_work.projects,
+        value: safe(data?.andalusia_work?.projects),
         type: "number",
         note: "Intervenciones registradas"
       },
       {
         label: "Participantes",
-        value: data.andalusia_work.people_total,
+        value: safe(data?.andalusia_work?.people_total),
         type: "number",
-        note: `${data.andalusia_work.women_pct}% mujeres`
+        note: `${safe(
+          data?.andalusia_work?.women_pct
+        )}% mujeres`
       },
       {
         label: "Inversión",
-        value: data.andalusia_work.investment_eur,
+        value: safe(
+          data?.andalusia_work?.investment_eur
+        ),
         type: "currency",
         note: "Volumen total"
       }
@@ -183,25 +254,35 @@ export function buildCards(data, section) {
     return [
       {
         label: "Países",
-        value: data.international_work.countries,
+        value: safe(
+          data?.international_work?.countries
+        ),
         type: "number",
         note: "Cobertura geográfica"
       },
       {
         label: "Proyectos",
-        value: data.international_work.projects,
+        value: safe(
+          data?.international_work?.projects
+        ),
         type: "number",
         note: "Intervenciones"
       },
       {
         label: "Personas",
-        value: data.international_work.people_total,
+        value: safe(
+          data?.international_work?.people_total
+        ),
         type: "number",
-        note: `${data.international_work.women_pct}% mujeres`
+        note: `${safe(
+          data?.international_work?.women_pct
+        )}% mujeres`
       },
       {
         label: "Inversión",
-        value: data.international_work.investment_eur,
+        value: safe(
+          data?.international_work?.investment_eur
+        ),
         type: "currency",
         note: "Volumen internacional"
       }
@@ -212,27 +293,41 @@ export function buildCards(data, section) {
     return [
       {
         label: "Personas socias",
-        value: data.social_base.members,
+        value: safe(data?.social_base?.members),
         type: "number",
-        note: `${data.social_base.members_women_pct}% mujeres`
+        note: `${safe(
+          data?.social_base?.members_women_pct
+        )}% mujeres`
       },
       {
         label: "Voluntariado",
-        value: data.social_base.volunteers_andalusia,
+        value: safe(
+          data?.social_base?.volunteers_andalusia
+        ),
         type: "number",
-        note: `${data.social_base.volunteers_women_pct}% mujeres`
+        note: `${safe(
+          data?.social_base?.volunteers_women_pct
+        )}% mujeres`
       },
       {
         label: "Personal contratado",
-        value: data.social_base.staff_andalusia,
+        value: safe(
+          data?.social_base?.staff_andalusia
+        ),
         type: "number",
-        note: `${data.social_base.staff_women_pct}% mujeres`
+        note: `${safe(
+          data?.social_base?.staff_women_pct
+        )}% mujeres`
       },
       {
         label: "Juntas y patronatos",
-        value: data.social_base.boards_total,
+        value: safe(
+          data?.social_base?.boards_total
+        ),
         type: "number",
-        note: `${data.social_base.boards_women_pct}% mujeres`
+        note: `${safe(
+          data?.social_base?.boards_women_pct
+        )}% mujeres`
       }
     ];
   }
@@ -240,86 +335,164 @@ export function buildCards(data, section) {
   return [
     {
       label: "Entidades participantes",
-      value: data.summary.entities_participating,
+      value: safe(
+        data?.summary?.entities_participating
+      ),
       type: "number",
       note: "Participantes en el informe"
     },
     {
       label: "ONGD participantes",
-      value: data.summary.ongd_participants,
+      value: safe(
+        data?.summary?.ongd_participants
+      ),
       type: "number",
       note: "Base principal"
     },
     {
       label: "Trabajo Andalucía",
-      value: data.andalusia_work.projects,
+      value: safe(
+        data?.andalusia_work?.projects
+      ),
       type: "number",
       note: "Proyectos"
     },
     {
       label: "Trabajo internacional",
-      value: data.international_work.projects,
+      value: safe(
+        data?.international_work?.projects
+      ),
       type: "number",
       note: "Proyectos"
     }
   ];
 }
 
+/* =====================================
+   ROWS
+===================================== */
+
 export function buildRows(data, section, detail) {
+  if (!data) return [];
+
   if (section === "andalucia") {
-    if (detail === "areas") return data.andalusia_work.areas || [];
-    if (detail === "provinces") return data.andalusia_work.province_source_table || [];
-    if (detail === "ods") return data.andalusia_work.ods || [];
-    if (detail === "funding") return data.andalusia_work.funding || [];
+    if (detail === "areas")
+      return data?.andalusia_work?.areas || [];
+
+    if (detail === "provinces")
+      return (
+        data?.andalusia_work
+          ?.province_source_table || []
+      );
+
+    if (detail === "ods")
+      return data?.andalusia_work?.ods || [];
+
+    if (detail === "funding")
+      return data?.andalusia_work?.funding || [];
   }
 
   if (section === "international") {
-    if (detail === "regions") return data.international_work.geographic_areas || [];
-    if (detail === "countries") return data.international_work.top_countries_investment || [];
-    if (detail === "ongd") return data.international_work.top_ongd_funds || [];
+    if (detail === "regions")
+      return (
+        data?.international_work
+          ?.geographic_areas || []
+      );
+
+    if (detail === "countries")
+      return (
+        data?.international_work
+          ?.top_countries_investment || []
+      );
+
+    if (detail === "ongd")
+      return (
+        data?.international_work
+          ?.top_ongd_funds || []
+      );
   }
 
   if (section === "social") {
     return [
       {
         name: "Personas socias",
-        total: data.social_base.members,
-        women_pct: data.social_base.members_women_pct
+        total: safe(data?.social_base?.members),
+        women_pct: safe(
+          data?.social_base?.members_women_pct
+        )
       },
       {
         name: "Voluntariado",
-        total: data.social_base.volunteers_andalusia,
-        women_pct: data.social_base.volunteers_women_pct
+        total: safe(
+          data?.social_base
+            ?.volunteers_andalusia
+        ),
+        women_pct: safe(
+          data?.social_base
+            ?.volunteers_women_pct
+        )
       },
       {
         name: "Personal contratado",
-        total: data.social_base.staff_andalusia,
-        women_pct: data.social_base.staff_women_pct
+        total: safe(
+          data?.social_base?.staff_andalusia
+        ),
+        women_pct: safe(
+          data?.social_base?.staff_women_pct
+        )
       },
       {
         name: "Personal expatriado",
-        total: data.social_base.expatriates,
-        women_pct: data.social_base.expatriates_women_pct
+        total: safe(
+          data?.social_base?.expatriates
+        ),
+        women_pct: safe(
+          data?.social_base
+            ?.expatriates_women_pct
+        )
       },
       {
         name: "Juntas y patronatos",
-        total: data.social_base.boards_total,
-        women_pct: data.social_base.boards_women_pct
+        total: safe(
+          data?.social_base?.boards_total
+        ),
+        women_pct: safe(
+          data?.social_base?.boards_women_pct
+        )
       }
     ];
   }
 
-  return data.andalusia_work?.areas || [];
+  return data?.andalusia_work?.areas || [];
 }
 
-export function buildTableColumns(section, detail, rows) {
-  if (!rows.length) return [];
+/* =====================================
+   TABLE
+===================================== */
+
+export function buildTableColumns(
+  section,
+  detail,
+  rows
+) {
+  if (!rows?.length) return [];
 
   if (section === "social") {
     return [
-      { key: "name", label: "Indicador" },
-      { key: "total", label: "Total" },
-      { key: "women_pct", label: "% mujeres", type: "percent" }
+      {
+        key: "name",
+        label: "Indicador"
+      },
+      {
+        key: "total",
+        label: "Total",
+        type: "number"
+      },
+      {
+        key: "women_pct",
+        label: "% mujeres",
+        type: "percent"
+      }
     ];
   }
 
@@ -336,7 +509,9 @@ export function buildTableColumns(section, detail, rows) {
     "women_pct"
   ];
 
-  const keys = preferred.filter((key) => key in rows[0]);
+  const keys = preferred.filter(
+    (key) => key in rows[0]
+  );
 
   return keys.map((key) => ({
     key,
@@ -346,9 +521,15 @@ export function buildTableColumns(section, detail, rows) {
         ? "currency"
         : key === "women_pct"
         ? "percent"
-        : "number"
+        : typeof rows[0][key] === "number"
+        ? "number"
+        : "text"
   }));
 }
+
+/* =====================================
+   RANKING
+===================================== */
 
 export function buildTopRanking(
   rows,
@@ -356,7 +537,9 @@ export function buildTopRanking(
   top = 8
 ) {
   const sorted = [...rows]
-    .filter((row) => typeof row[metric] === "number")
+    .filter(
+      (row) => typeof row?.[metric] === "number"
+    )
     .sort((a, b) => b[metric] - a[metric])
     .slice(0, top);
 
