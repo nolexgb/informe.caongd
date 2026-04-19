@@ -10,7 +10,7 @@
   --brand-300: #a9d3ca;
   --brand-100: #ebf6f3;
 
-  /* Lime logo accent */
+  /* Logo lime */
   --lime-900: #6f9200;
   --lime-800: #84ab0b;
   --lime-700: #96bd16;
@@ -35,6 +35,7 @@
   /* Semantic */
   --success-600: #1f7a3d;
   --danger-600: #b42318;
+  --warning-600: #b7791f;
 
   /* Surfaces */
   --bg: #f6faf8;
@@ -266,11 +267,20 @@ p {
   max-width: 940px;
 }
 
+.narrative-hero__subtitle {
+  margin-top: 12px;
+  max-width: 760px;
+  font-size: 14px;
+  color: rgba(255,255,255,.72);
+  position: relative;
+  z-index: 2;
+}
+
 .narrative-hero__text {
   margin-top: 20px;
   max-width: 780px;
-  color: rgba(255,255,255,.88);
   font-size: 18px;
+  color: rgba(255,255,255,.88);
 }
 
 .narrative-hero__stats {
@@ -296,6 +306,27 @@ p {
 .narrative-hero__stat-label {
   margin-top: 8px;
   color: rgba(255,255,255,.9);
+}
+
+.narrative-hero__glow {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.narrative-hero__glow--one {
+  top: -90px;
+  right: -90px;
+  width: 240px;
+  height: 240px;
+  background: rgba(255,255,255,.06);
+}
+
+.narrative-hero__glow--two {
+  left: -60px;
+  bottom: -60px;
+  width: 180px;
+  height: 180px;
+  background: rgba(255,255,255,.04);
 }
 
 /* =========================
@@ -392,22 +423,7 @@ p {
   box-shadow: var(--shadow-card);
 }
 
-.premium-kpi-card.is-featured {
-  background: linear-gradient(
-    135deg,
-    var(--brand-900),
-    var(--brand-700)
-  );
-}
-
-.premium-kpi-card.is-featured .premium-kpi-value,
-.premium-kpi-card.is-featured .premium-kpi-note,
-.premium-kpi-card.is-featured .eyebrow {
-  color: white;
-}
-
-.premium-kpi-value,
-.kpi-value {
+.premium-kpi-value {
   margin-top: 14px;
   font-size: clamp(38px,5vw,58px);
   line-height: .95;
@@ -416,8 +432,7 @@ p {
   color: var(--brand-900);
 }
 
-.premium-kpi-note,
-.kpi-note {
+.premium-kpi-note {
   margin-top: 16px;
   font-size: 14px;
 }
@@ -437,12 +452,11 @@ p {
 }
 
 /* =========================
-   COMPARE PANEL
+   COMPARE
 ========================= */
 
 .compare-panel {
   padding: 28px;
-  border-radius: 24px;
 }
 
 .compare-panel__title {
@@ -468,7 +482,6 @@ p {
   border-radius: 22px;
   background: linear-gradient(180deg,#fff,#f8fcfa);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft);
 }
 
 .compare-current {
@@ -504,8 +517,13 @@ p {
   color: var(--danger-600);
 }
 
+.compare-delta.neutral {
+  background: rgba(91,107,103,.12);
+  color: var(--ink-700);
+}
+
 /* =========================
-   TABLE
+   TABLES
 ========================= */
 
 .table-wrap {
@@ -532,7 +550,6 @@ p {
 .premium-data-table th,
 .premium-data-table td {
   padding: 14px 16px;
-  text-align: left;
   border-bottom: 1px solid var(--border);
 }
 
@@ -542,6 +559,7 @@ p {
   font-size: 13px;
   font-weight: 800;
   color: var(--ink-700);
+  text-align: left;
 }
 
 .premium-data-table .is-primary-col {
@@ -560,7 +578,7 @@ p {
 }
 
 /* =========================
-   EMPTY STATE
+   EMPTY
 ========================= */
 
 .empty-state {
