@@ -26,7 +26,7 @@ import {
 const YEARS = ["2023", "2024"];
 
 /* =====================================
-   SECTION HEADINGS
+   HELPERS
 ===================================== */
 
 function getSectionHeading(section) {
@@ -63,7 +63,7 @@ function getSectionHeading(section) {
       return {
         eyebrow: "Comparativa anual",
         title: "Evolución de indicadores entre ejercicios",
-        text: "Compara las magnitudes principales del año actual frente a 2023 para detectar cambios y continuidad."
+        text: "Contrasta automáticamente las principales magnitudes entre años disponibles."
       };
 
     default:
@@ -75,19 +75,10 @@ function getSectionHeading(section) {
   }
 }
 
-/* =====================================
-   METRICS
-===================================== */
-
 function getAllowedMetrics(section) {
   switch (section) {
     case "overview":
-      return [
-        "investment_eur",
-        "projects",
-        "people",
-        "ongd"
-      ];
+      return ["investment_eur", "projects", "people", "ongd"];
 
     case "andalucia":
       return [
@@ -108,11 +99,7 @@ function getAllowedMetrics(section) {
       ];
 
     case "social":
-      return [
-        "people",
-        "ongd",
-        "total"
-      ];
+      return ["people", "ongd", "total"];
 
     case "compare":
       return [
@@ -140,158 +127,10 @@ function getDefaultMetric(section, detail) {
   }
 
   if (section === "international") {
-    if (detail === "regions") return "investment_eur";
-    if (detail === "countries") return "investment_eur";
-    if (detail === "ongd") return "investment_eur";
+    return "investment_eur";
   }
 
   return "investment_eur";
-}
-
-function getMetricLabel(metric) {
-  switch (metric) {
-    case "investment_eur":
-      return "inversión";
-    case "projects":
-      return "proyectos";
-    case "people":
-      return "personas";
-    case "ongd":
-      return "ONGD";
-    case "countries":
-      return "países";
-    case "total":
-      return "total";
-    default:
-      return "valor";
-  }
-}
-
-/* =====================================
-   INSIGHTS
-===================================== */
-
-function getTopInsight(section, ranking, metric) {
-  const first = ranking?.[0];
-
-  if (!first) {
-    return {
-      eyebrow: "Insight principal",
-      title: "No hay suficiente información para destacar resultados.",
-      text: "Ajusta filtros o cambia de vista para generar nuevas lecturas."
-    };
-  }
-
-  const metricLabel = getMetricLabel(metric);
-
-  switch (section) {
-    case "andalucia":
-      return {
-        eyebrow: "Insight principal",
-        title: `${first.name} lidera Andalucía por ${metricLabel}.`,
-        text: "La distribución territorial refleja concentración relativa en los principales nodos provinciales."
-      };
-
-    case "international":
-      return {
-        eyebrow: "Insight principal",
-        title: `${first.name} encabeza la acción exterior por ${metricLabel}.`,
-        text: "Los destinos prioritarios concentran una parte sustancial del esfuerzo internacional."
-      };
-
-    case "social":
-      return {
-        eyebrow: "Insight principal",
-        title: `${first.name} destaca dentro de la base social.`,
-        text: "La estructura humana muestra pesos diferenciados entre perfiles organizativos."
-      };
-
-    default:
-      return {
-        eyebrow: "Insight principal",
-        title: `${first.name} destaca en la vista actual.`,
-        text: "Consulta ranking, mapa y tabla para ampliar detalle."
-      };
-  }
-}
-
-function getSectionSummary(section, ranking) {
-  const names = ranking
-    .slice(0, 3)
-    .map((item) => item.name)
-    .filter(Boolean);
-
-  if (!names.length) {
-    return {
-      eyebrow: "Lectura final",
-      title: "No hay suficiente información para generar cierre.",
-      text: "Prueba otras combinaciones de filtros."
-    };
-  }
-
-  const joined = names.join(", ");
-
-  switch (section) {
-    case "andalucia":
-      return {
-        eyebrow: "Lectura final",
-        title: "La actividad territorial muestra focos claros.",
-        text: `Los principales territorios observados son ${joined}.`
-      };
-
-    case "international":
-      return {
-        eyebrow: "Lectura final",
-        title: "La proyección internacional se concentra en destinos prioritarios.",
-        text: `Sobresalen ${joined} como espacios de mayor intensidad.`
-      };
-
-    case "social":
-      return {
-        eyebrow: "Lectura final",
-        title: "La base social presenta una estructura diversa.",
-        text: `Los indicadores más destacados son ${joined}.`
-      };
-
-    default:
-      return {
-        eyebrow: "Lectura final",
-        title: "La vista actual permite identificar jerarquías claras.",
-        text: `Destacan especialmente ${joined}.`
-      };
-  }
-}
-
-/* =====================================
-   INLINE COMPONENTS
-===================================== */
-
-function InsightStrip({ insight }) {
-  if (!insight) return null;
-
-  return (
-    <section className="section-space">
-      <div className="panel panel-section panel-soft">
-        <div className="eyebrow">{insight.eyebrow}</div>
-        <h2 className="section-block__title">{insight.title}</h2>
-        <p className="section-block__text">{insight.text}</p>
-      </div>
-    </section>
-  );
-}
-
-function SectionSummary({ summary }) {
-  if (!summary) return null;
-
-  return (
-    <section className="section-space">
-      <div className="panel panel-section panel-soft">
-        <div className="eyebrow">{summary.eyebrow}</div>
-        <h2 className="section-block__title">{summary.title}</h2>
-        <p className="section-block__text">{summary.text}</p>
-      </div>
-    </section>
-  );
 }
 
 /* =====================================
@@ -355,21 +194,25 @@ export default function App() {
   }, [section, detail, metric]);
 
   const current = dataByYear[year];
-  const previous = dataByYear["2023"];
 
-  const narrative = useMemo(
-    () =>
-      current
-        ? buildNarrative(current, section)
-        : null,
-    [current, section]
-  );
+  const comparisonYear =
+    year === "2024" ? "2023" : "2024";
+
+  const previous = dataByYear[comparisonYear];
 
   const cards = useMemo(
     () =>
       current
         ? buildCards(current, section)
         : [],
+    [current, section]
+  );
+
+  const narrative = useMemo(
+    () =>
+      current
+        ? buildNarrative(current, section)
+        : null,
     [current, section]
   );
 
@@ -382,28 +225,18 @@ export default function App() {
   );
 
   const columns = useMemo(
-    () => buildTableColumns(section, detail, rows),
+    () =>
+      buildTableColumns(section, detail, rows),
     [section, detail, rows]
   );
 
   const ranking = useMemo(
-    () => buildTopRanking(rows, metric, 8),
+    () =>
+      buildTopRanking(rows, metric, 8),
     [rows, metric]
   );
 
-  const sectionHeading = getSectionHeading(section);
-
-  const insight = useMemo(
-    () =>
-      getTopInsight(section, ranking, metric),
-    [section, ranking, metric]
-  );
-
-  const summary = useMemo(
-    () =>
-      getSectionSummary(section, ranking),
-    [section, ranking]
-  );
+  const heading = getSectionHeading(section);
 
   if (loading) {
     return (
@@ -438,15 +271,15 @@ export default function App() {
           <section className="section-space">
             <div className="panel panel-section panel-soft">
               <div className="eyebrow">
-                {sectionHeading.eyebrow}
+                {heading.eyebrow}
               </div>
 
               <h2 className="section-block__title">
-                {sectionHeading.title}
+                {heading.title}
               </h2>
 
               <p className="section-block__text">
-                {sectionHeading.text}
+                {heading.text}
               </p>
             </div>
           </section>
@@ -470,12 +303,11 @@ export default function App() {
               current={current}
               previous={previous}
               year={year}
+              previousYear={comparisonYear}
             />
           </section>
         ) : (
           <>
-            <InsightStrip insight={insight} />
-
             <KPICards cards={cards} />
 
             <section className="content-grid section-space">
@@ -502,8 +334,6 @@ export default function App() {
                 columns={columns}
               />
             </section>
-
-            <SectionSummary summary={summary} />
           </>
         )}
       </main>
