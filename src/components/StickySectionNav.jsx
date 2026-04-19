@@ -1,5 +1,3 @@
-// src/components/StickySectionNav.jsx
-
 const ITEMS = [
   ["overview", "Resumen"],
   ["andalucia", "Andalucía"],
