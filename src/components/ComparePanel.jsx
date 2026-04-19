@@ -1,4 +1,5 @@
 import { formatValue, getDelta } from "../utils/format";
+import MotionSection from "./MotionSection";
 
 function buildItems(current, previous) {
   if (!current || !previous) return [];
@@ -37,16 +38,32 @@ function buildItems(current, previous) {
   ];
 }
 
-export default function ComparePanel({ current, previous, year }) {
+export default function ComparePanel({
+  current,
+  previous,
+  year
+}) {
   const items = buildItems(current, previous);
 
   if (!previous) {
     return (
-      <section className="panel panel-table">
+      <section
+        className="panel panel-table compare-panel"
+        style={{
+          padding: "28px",
+          borderRadius: "24px"
+        }}
+      >
         <div className="panel-head">
           <div>
             <div className="eyebrow">Comparador anual</div>
-            <h2>No hay año previo cargado</h2>
+            <h2 style={{ marginTop: "8px", fontSize: "32px" }}>
+              No hay año previo cargado
+            </h2>
+            <p style={{ marginTop: "12px" }}>
+              No se puede construir la comparativa porque no hay
+              datos anteriores disponibles.
+            </p>
           </div>
         </div>
       </section>
@@ -54,35 +71,60 @@ export default function ComparePanel({ current, previous, year }) {
   }
 
   return (
-    <section className="panel panel-table">
+    <section
+      className="panel panel-table compare-panel"
+      style={{
+        padding: "28px",
+        borderRadius: "24px",
+        background:
+          "linear-gradient(180deg,#ffffff 0%,#f8fbfe 100%)"
+      }}
+    >
       <div className="panel-head">
         <div>
           <div className="eyebrow">Comparador anual</div>
-          <h2>{year} frente a 2023</h2>
+          <h2 style={{ marginTop: "8px", fontSize: "36px" }}>
+            {year} frente a 2023
+          </h2>
+          <p style={{ marginTop: "12px", maxWidth: "760px" }}>
+            Esta sección resume la evolución de los principales
+            indicadores entre el ejercicio actual y el año base.
+          </p>
         </div>
       </div>
 
-      <div className="compare-grid">
-        {items.map((item) => {
+      <div className="compare-grid premium-compare-grid">
+        {items.map((item, index) => {
           const delta = getDelta(item.current, item.previous);
           const positive = delta >= 0;
 
           return (
-            <article key={item.label} className="compare-card">
-              <div className="eyebrow">{item.label}</div>
+            <MotionSection
+              key={item.label}
+              delay={index * 0.06}
+              y={20}
+            >
+              <article className="compare-card premium-compare-card">
+                <div className="eyebrow">{item.label}</div>
 
-              <div className="compare-current">
-                {formatValue(item.current, item.type)}
-              </div>
+                <div className="compare-current">
+                  {formatValue(item.current, item.type)}
+                </div>
 
-              <div className="compare-previous">
-                Antes: {formatValue(item.previous, item.type)}
-              </div>
+                <div className="compare-previous">
+                  Antes: {formatValue(item.previous, item.type)}
+                </div>
 
-              <div className={`compare-delta ${positive ? "up" : "down"}`}>
-                {positive ? "▲" : "▼"} {Math.abs(delta).toFixed(1)}%
-              </div>
-            </article>
+                <div
+                  className={`compare-delta ${
+                    positive ? "up" : "down"
+                  }`}
+                >
+                  {positive ? "▲" : "▼"}{" "}
+                  {Math.abs(delta).toFixed(1)}%
+                </div>
+              </article>
+            </MotionSection>
           );
         })}
       </div>
