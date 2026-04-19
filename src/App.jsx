@@ -95,6 +95,14 @@ export default function App() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (section === "overview") setDetail("areas");
+    if (section === "andalucia") setDetail("areas");
+    if (section === "international") setDetail("regions");
+    if (section === "social") setDetail("social");
+    if (section === "compare") setDetail("comparison");
+  }, [section]);
+
   const current = dataByYear[year];
   const previous = dataByYear["2023"];
 
