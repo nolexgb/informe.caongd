@@ -1,3 +1,38 @@
+import AnimatedCounter from "./AnimatedCounter";
+
+function formatStatValue(stat) {
+  if (stat?.rawValue !== undefined && stat?.rawValue !== null) {
+    return stat.rawValue;
+  }
+
+  return stat?.value ?? "—";
+}
+
+function getFallbackStats(year) {
+  return [
+    {
+      label: "Provincias activas",
+      value: "8",
+      rawValue: 8
+    },
+    {
+      label: "Países",
+      value: "68",
+      rawValue: 68
+    },
+    {
+      label: "Proyectos",
+      value: "+300",
+      rawValue: 300,
+      prefix: "+"
+    },
+    {
+      label: "Edición actual",
+      value: year || "2024"
+    }
+  ];
+}
+
 export default function NarrativeHero({
   narrative,
   year
@@ -10,131 +45,49 @@ export default function NarrativeHero({
     narrative?.text ||
     "Explora el trabajo en Andalucía, la acción internacional, la financiación y la base social mediante una experiencia visual premium basada en datos.";
 
-  const stats = narrative?.stats || [
-    ["8", "Provincias activas"],
-    ["68", "Países"],
-    ["+300", "Proyectos"],
-    [year || "2024", "Edición actual"]
-  ];
+  const stats =
+    Array.isArray(narrative?.stats) && narrative.stats.length
+      ? narrative.stats
+      : getFallbackStats(year);
 
   return (
-    <section
-      style={{
-        marginTop: "24px",
-        padding: "64px",
-        borderRadius: "28px",
-        color: "white",
-        background:
-          "linear-gradient(135deg,#0b2e59 0%,#1a5a96 55%,#2374b7 100%)",
-        boxShadow: "0 25px 60px rgba(11,46,89,.18)",
-        position: "relative",
-        overflow: "hidden"
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          top: "-80px",
-          right: "-80px",
-          width: "240px",
-          height: "240px",
-          borderRadius: "50%",
-          background: "rgba(255,255,255,.08)"
-        }}
-      />
+    <section className="narrative-hero">
+      <div className="narrative-hero__glow narrative-hero__glow--one" />
+      <div className="narrative-hero__glow narrative-hero__glow--two" />
 
-      <div
-        style={{
-          position: "absolute",
-          bottom: "-60px",
-          left: "-60px",
-          width: "180px",
-          height: "180px",
-          borderRadius: "50%",
-          background: "rgba(255,255,255,.05)"
-        }}
-      />
-
-      <div
-        className="eyebrow"
-        style={{
-          color: "#8cc4f0",
-          position: "relative",
-          zIndex: 2
-        }}
-      >
+      <div className="eyebrow narrative-hero__eyebrow">
         INFORME INTERACTIVO {year}
       </div>
 
-      <h1
-        style={{
-          fontSize: "clamp(42px,7vw,74px)",
-          maxWidth: "920px",
-          marginTop: "14px",
-          lineHeight: "1.02",
-          position: "relative",
-          zIndex: 2
-        }}
-      >
+      <h1 className="narrative-hero__title">
         {title}
       </h1>
 
-      <p
-        style={{
-          maxWidth: "760px",
-          marginTop: "20px",
-          color: "rgba(255,255,255,.88)",
-          fontSize: "18px",
-          lineHeight: "1.6",
-          position: "relative",
-          zIndex: 2
-        }}
-      >
+      <p className="narrative-hero__text">
         {text}
       </p>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit,minmax(180px,1fr))",
-          gap: "18px",
-          marginTop: "34px",
-          position: "relative",
-          zIndex: 2
-        }}
-      >
-        {stats.map(([n, t]) => (
-          <div
-            key={t}
-            style={{
-              padding: "18px",
-              borderRadius: "18px",
-              background: "rgba(255,255,255,.10)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,.08)"
-            }}
-          >
-            <div
-              style={{
-                fontSize: "34px",
-                fontWeight: 800,
-                lineHeight: 1
-              }}
-            >
-              {n}
-            </div>
+      <div className="narrative-hero__stats">
+        {stats.map((stat) => {
+          const raw = formatStatValue(stat);
 
+          return (
             <div
-              style={{
-                marginTop: "8px",
-                opacity: 0.9
-              }}
+              key={stat.label}
+              className="narrative-hero__stat"
             >
-              {t}
+              <div className="narrative-hero__stat-value">
+                {stat.prefix || ""}
+                <AnimatedCounter value={raw} />
+                {stat.suffix || ""}
+              </div>
+
+              <div className="narrative-hero__stat-label">
+                {stat.label}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
