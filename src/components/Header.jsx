@@ -1,3 +1,5 @@
+// src/components/Header.jsx
+
 const YEAR = "2024";
 
 export default function Header() {
