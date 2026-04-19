@@ -66,6 +66,172 @@ function getSectionHeading(section) {
   }
 }
 
+function getAllowedMetrics(section) {
+  switch (section) {
+    case "overview":
+      return ["investment_eur", "projects", "people", "ongd"];
+    case "andalucia":
+      return ["investment_eur", "projects", "people", "ongd", "total"];
+    case "international":
+      return ["investment_eur", "projects", "people", "countries", "ongd"];
+    case "social":
+      return ["people", "ongd", "total"];
+    case "compare":
+      return [
+        "investment_eur",
+        "projects",
+        "people",
+        "ongd",
+        "countries",
+        "total"
+      ];
+    default:
+      return ["investment_eur"];
+  }
+}
+
+function getMetricLabel(metric) {
+  switch (metric) {
+    case "investment_eur":
+      return "inversión";
+    case "projects":
+      return "proyectos";
+    case "people":
+      return "personas";
+    case "ongd":
+      return "ONGD";
+    case "countries":
+      return "países";
+    case "total":
+      return "total";
+    default:
+      return "valor";
+  }
+}
+
+function getTopInsight(section, ranking, metric) {
+  const first = ranking?.[0];
+
+  if (!first) {
+    return {
+      eyebrow: "Insight principal",
+      title: "No hay suficiente información para destacar un resultado principal.",
+      text: "Ajusta los filtros para generar una lectura más específica."
+    };
+  }
+
+  const metricLabel = getMetricLabel(metric);
+
+  switch (section) {
+    case "andalucia":
+      return {
+        eyebrow: "Insight principal",
+        title: `${first.name} lidera la lectura territorial por ${metricLabel}.`,
+        text: "La distribución territorial muestra concentración en los nodos con mayor capacidad de ejecución y financiación."
+      };
+
+    case "international":
+      return {
+        eyebrow: "Insight principal",
+        title: `${first.name} encabeza la presencia internacional por ${metricLabel}.`,
+        text: "La actividad exterior revela focos geográficos prioritarios y concentración relativa en los principales destinos."
+      };
+
+    case "social":
+      return {
+        eyebrow: "Insight principal",
+        title: `${first.name} destaca como indicador principal de la base social.`,
+        text: "La estructura humana y organizativa muestra diferencias relevantes entre participación, personal y órganos de gobierno."
+      };
+
+    case "overview":
+      return {
+        eyebrow: "Insight principal",
+        title: `${first.name} concentra el mayor peso relativo en esta vista.`,
+        text: "La síntesis ejecutiva permite detectar rápidamente los focos con mayor intensidad dentro del sistema."
+      };
+
+    default:
+      return {
+        eyebrow: "Insight principal",
+        title: `${first.name} destaca en la lectura actual.`,
+        text: "Utiliza el mapa, el ranking y la tabla para profundizar en el detalle."
+      };
+  }
+}
+
+function getSectionSummary(section, ranking) {
+  const names = ranking.slice(0, 3).map((item) => item.name).filter(Boolean);
+
+  if (!names.length) {
+    return {
+      eyebrow: "Lectura final",
+      title: "No hay suficiente detalle para construir un cierre automático.",
+      text: "Prueba otra combinación de filtros para generar una conclusión más precisa."
+    };
+  }
+
+  const joined = names.join(", ");
+
+  switch (section) {
+    case "andalucia":
+      return {
+        eyebrow: "Lectura final",
+        title: "La actividad en Andalucía presenta una concentración territorial clara.",
+        text: `Los principales focos identificados en esta vista son ${joined}, lo que sugiere una implantación desigual pero reconocible en el territorio andaluz.`
+      };
+
+    case "international":
+      return {
+        eyebrow: "Lectura final",
+        title: "La proyección internacional se organiza alrededor de un núcleo de destinos prioritarios.",
+        text: `La lectura comparada sitúa a ${joined} entre los espacios con mayor peso relativo en la acción exterior.`
+      };
+
+    case "social":
+      return {
+        eyebrow: "Lectura final",
+        title: "La base social muestra una estructura diversa y complementaria.",
+        text: `Los indicadores con mayor volumen relativo en esta lectura son ${joined}, lo que aporta una visión más completa de la capacidad organizativa.`
+      };
+
+    default:
+      return {
+        eyebrow: "Lectura final",
+        title: "La vista actual permite identificar una jerarquía clara de resultados.",
+        text: `Los primeros elementos destacados en esta combinación son ${joined}, con una presencia especialmente relevante en el conjunto analizado.`
+      };
+  }
+}
+
+function InsightStrip({ insight }) {
+  if (!insight) return null;
+
+  return (
+    <section className="section-space">
+      <div className="panel panel-section panel-soft">
+        <div className="eyebrow">{insight.eyebrow}</div>
+        <h2 className="section-block__title">{insight.title}</h2>
+        <p className="section-block__text">{insight.text}</p>
+      </div>
+    </section>
+  );
+}
+
+function SectionSummary({ summary }) {
+  if (!summary) return null;
+
+  return (
+    <section className="section-space">
+      <div className="panel panel-section panel-soft">
+        <div className="eyebrow">{summary.eyebrow}</div>
+        <h2 className="section-block__title">{summary.title}</h2>
+        <p className="section-block__text">{summary.text}</p>
+      </div>
+    </section>
+  );
+}
+
 export default function App() {
   const [year, setYear] = useState("2024");
   const [section, setSection] = useState("overview");
@@ -106,6 +272,14 @@ export default function App() {
     if (section === "compare") setDetail("comparison");
   }, [section]);
 
+  useEffect(() => {
+    const allowed = getAllowedMetrics(section);
+
+    if (!allowed.includes(metric)) {
+      setMetric(allowed[0]);
+    }
+  }, [section, metric]);
+
   const current = dataByYear[year];
   const previous = dataByYear["2023"];
 
@@ -136,6 +310,16 @@ export default function App() {
 
   const sectionHeading = getSectionHeading(section);
 
+  const insight = useMemo(
+    () => getTopInsight(section, ranking, metric),
+    [section, ranking, metric]
+  );
+
+  const summary = useMemo(
+    () => getSectionSummary(section, ranking),
+    [section, ranking]
+  );
+
   if (loading) {
     return (
       <div className="loading-screen-pro">
@@ -157,9 +341,7 @@ export default function App() {
             </div>
           </div>
 
-          <h1 className="loading-title">
-            Preparando la plataforma…
-          </h1>
+          <h1 className="loading-title">Preparando la plataforma…</h1>
 
           <p className="loading-text">
             Cargando mapas, rankings, tablas y visualizaciones.
@@ -196,9 +378,7 @@ export default function App() {
         <MotionSection delay={0.05}>
           <section className="section-space">
             <div className="panel panel-section panel-soft">
-              <div className="eyebrow">
-                {sectionHeading.eyebrow}
-              </div>
+              <div className="eyebrow">{sectionHeading.eyebrow}</div>
 
               <h2 className="section-block__title">
                 {sectionHeading.title}
@@ -236,15 +416,17 @@ export default function App() {
           </MotionSection>
         ) : (
           <>
+            <MotionSection delay={0.1}>
+              <InsightStrip insight={insight} />
+            </MotionSection>
+
             <KPICards cards={cards} />
 
             <section className="content-grid section-space">
               <MotionSection delay={0.12}>
                 <div className="panel panel-map panel-section panel-soft panel-primary panel-large">
                   <div className="panel-head">
-                    <div className="eyebrow">
-                      Mapa interactivo
-                    </div>
+                    <div className="eyebrow">Mapa interactivo</div>
 
                     <h2 className="panel-title">
                       Distribución territorial
@@ -315,6 +497,10 @@ export default function App() {
                   />
                 </div>
               </section>
+            </MotionSection>
+
+            <MotionSection delay={0.26}>
+              <SectionSummary summary={summary} />
             </MotionSection>
           </>
         )}
