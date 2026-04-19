@@ -1,48 +1,30 @@
-const NAV_ITEMS = [
-  { key: "overview", label: "Resumen" },
-  { key: "andalucia", label: "Andalucía" },
-  { key: "international", label: "Otros países" },
-  { key: "social", label: "Base social" },
-  { key: "compare", label: "Comparador" }
-];
+const YEAR = "2024";
 
-export default function Header({ section, setSection }) {
+export default function Header() {
   return (
-    <header className="topbar">
-      <div className="topbar-inner">
-        <button
-          className="brand"
-          onClick={() => setSection("overview")}
-          aria-label="Ir al inicio"
-        >
-          <div className="brand-badge">CA</div>
+    <header className="institutional-header">
+      <div className="page-wrap institutional-header__inner">
+        <div className="institutional-brand">
+          <div className="institutional-brand__badge">
+            CA
+          </div>
 
-          <div className="brand-copy">
-            <div className="brand-title">
+          <div>
+            <div className="institutional-brand__title">
               CAONGD Data Explorer
             </div>
 
-            <div className="brand-subtitle">
-              Informe interactivo premium
+            <div className="institutional-brand__subtitle">
+              Informe interactivo
             </div>
           </div>
-        </button>
+        </div>
 
-        <nav className="nav" aria-label="Navegación principal">
-          {NAV_ITEMS.map((item) => {
-            const active = section === item.key;
-
-            return (
-              <button
-                key={item.key}
-                className={`nav-link ${active ? "active" : ""}`}
-                onClick={() => setSection(item.key)}
-              >
-                {item.label}
-              </button>
-            );
-          })}
-        </nav>
+        <div className="institutional-meta">
+          <span className="institutional-pill">
+            Edición {YEAR}
+          </span>
+        </div>
       </div>
     </header>
   );
