@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import "./styles/theme.css";
 
+import Header from "./components/Header";
 import FiltersBar from "./components/FiltersBar";
 import NarrativeHero from "./components/NarrativeHero";
 import KPICards from "./components/KPICards";
@@ -133,66 +134,46 @@ export default function App() {
 
   const sectionHeading = getSectionHeading(section);
 
- if (loading) {
-  return (
-    <div className="loading-screen-pro">
-      <div className="loading-screen-pro__glow loading-screen-pro__glow--one" />
-      <div className="loading-screen-pro__glow loading-screen-pro__glow--two" />
+  if (loading) {
+    return (
+      <div className="loading-screen-pro">
+        <div className="loading-screen-pro__glow loading-screen-pro__glow--one" />
+        <div className="loading-screen-pro__glow loading-screen-pro__glow--two" />
 
-      <div className="loading-card-pro panel">
-        <div className="loading-brand">
-          <div className="loading-brand__badge">
-            CA
-          </div>
-
-          <div>
-            <div className="loading-brand__title">
-              CAONGD Data Explorer
+        <div className="loading-card-pro panel">
+          <div className="loading-brand">
+            <div className="loading-brand__badge">
+              CA
             </div>
 
-            <div className="loading-brand__subtitle">
-              Informe interactivo
+            <div>
+              <div className="loading-brand__title">
+                CAONGD Data Explorer
+              </div>
+
+              <div className="loading-brand__subtitle">
+                Informe interactivo
+              </div>
             </div>
           </div>
-        </div>
 
-        <h1 className="loading-title">
-          Preparando la plataforma…
-        </h1>
-
-        <p className="loading-text">
-          Cargando mapas, rankings, tablas y visualizaciones.
-        </p>
-
-        <div className="loading-bar">
-          <span />
-        </div>
-
-        <div className="loading-skeleton-grid">
-          <div className="loading-skeleton-card" />
-          <div className="loading-skeleton-card" />
-          <div className="loading-skeleton-card" />
-        </div>
-      </div>
-    </div>
-  );
-}
-      >
-        <div
-          className="panel"
-          style={{
-            maxWidth: "620px",
-            padding: "38px",
-            textAlign: "center"
-          }}
-        >
-          <div className="eyebrow">CAONGD Data Explorer</div>
-          <h1 style={{ marginTop: "10px", fontSize: "40px" }}>
-            Cargando plataforma…
+          <h1 className="loading-title">
+            Preparando la plataforma…
           </h1>
-          <p style={{ marginTop: "14px" }}>
-            Preparando gráficos, rankings, tablas y mapas.
+
+          <p className="loading-text">
+            Cargando mapas, rankings, tablas y visualizaciones.
           </p>
+
+          <div className="loading-bar">
+            <span />
+          </div>
+
+          <div className="loading-skeleton-grid">
+            <div className="loading-skeleton-card" />
+            <div className="loading-skeleton-card" />
+            <div className="loading-skeleton-card" />
+          </div>
         </div>
       </div>
     );
@@ -206,6 +187,8 @@ export default function App() {
           "radial-gradient(circle at top right, rgba(140,196,240,.18), transparent 30%)"
       }}
     >
+      <Header />
+
       <div className="page-wrap">
         <NarrativeHero narrative={narrative} year={year} />
       </div>
