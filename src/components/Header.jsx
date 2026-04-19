@@ -11,13 +11,13 @@ export default function Header() {
             CA
           </div>
 
-          <div>
+          <div className="institutional-brand__content">
             <div className="institutional-brand__title">
               CAONGD Data Explorer
             </div>
 
             <div className="institutional-brand__subtitle">
-              Informe interactivo
+              Coordinadora Andaluza de ONGD · Informe interactivo
             </div>
           </div>
         </div>
