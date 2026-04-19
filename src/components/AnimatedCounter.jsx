@@ -1,3 +1,5 @@
+// src/components/AnimatedCounter.jsx
+
 import { useEffect, useMemo, useRef, useState } from "react";
 
 function easeOutCubic(t) {
@@ -5,15 +7,35 @@ function easeOutCubic(t) {
 }
 
 function extractNumber(value) {
-  if (typeof value === "number") return value;
-  if (typeof value !== "string") return null;
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value !== "string") {
+    return null;
+  }
 
   const cleaned = value
-    .replace(/[^\d.,-]/g, "")
-    .replace(/\./g, "")
-    .replace(",", ".");
+    .trim()
+    .replace(/\s/g, "")
+    .replace(/[^\d.,-]/g, "");
 
-  const parsed = Number(cleaned);
+  if (!cleaned) {
+    return null;
+  }
+
+  const hasComma = cleaned.includes(",");
+  const hasDot = cleaned.includes(".");
+
+  let normalized = cleaned;
+
+  if (hasComma && hasDot) {
+    normalized = cleaned.replace(/\./g, "").replace(",", ".");
+  } else if (hasComma) {
+    normalized = cleaned.replace(",", ".");
+  }
+
+  const parsed = Number(normalized);
 
   return Number.isFinite(parsed) ? parsed : null;
 }
@@ -32,16 +54,20 @@ export default function AnimatedCounter({
   duration = 1200,
   locale = "es-ES"
 }) {
-  const numericValue = useMemo(
-    () => extractNumber(value),
-    [value]
+  const numericValue = useMemo(() => extractNumber(value), [value]);
+  const decimals = useMemo(
+    () => (numericValue !== null ? getDecimals(numericValue) : 0),
+    [numericValue]
   );
 
   const [display, setDisplay] = useState(
-    numericValue !== null ? 0 : value
+    numericValue !== null ? numericValue : value
   );
 
   const frameRef = useRef(null);
+  const previousValueRef = useRef(
+    numericValue !== null ? numericValue : 0
+  );
 
   useEffect(() => {
     if (frameRef.current) {
@@ -53,9 +79,12 @@ export default function AnimatedCounter({
       return;
     }
 
-    const startValue = 0;
+    const startValue =
+      typeof previousValueRef.current === "number"
+        ? previousValueRef.current
+        : 0;
+
     const endValue = numericValue;
-    const decimals = getDecimals(endValue);
     const startTime = performance.now();
 
     function frame(now) {
@@ -77,6 +106,7 @@ export default function AnimatedCounter({
         frameRef.current = requestAnimationFrame(frame);
       } else {
         setDisplay(endValue);
+        previousValueRef.current = endValue;
       }
     }
 
@@ -87,17 +117,18 @@ export default function AnimatedCounter({
         cancelAnimationFrame(frameRef.current);
       }
     };
-  }, [numericValue, value, duration]);
+  }, [numericValue, value, duration, decimals]);
 
   if (numericValue === null) {
-    return <>{value}</>;
+    return <span>{value}</span>;
   }
 
   return (
-    <>
+    <span>
       {Number(display).toLocaleString(locale, {
-        maximumFractionDigits: getDecimals(numericValue)
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
       })}
-    </>
+    </span>
   );
 }
