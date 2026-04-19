@@ -11,6 +11,10 @@ const LABELS = {
   women_pct: "% mujeres"
 };
 
+function safe(value, fallback = 0) {
+  return value ?? fallback;
+}
+
 export function buildNarrative(data, section) {
   if (!data) return null;
 
@@ -19,26 +23,56 @@ export function buildNarrative(data, section) {
       title:
         data?.andalusia_work?.tool_intro?.title ||
         "Trabajo en Andalucía",
-
-      summary:
+      subtitle: "Distribución territorial y áreas de trabajo",
+      text:
         data?.andalusia_work?.tool_intro?.summary ||
-        "Explora automáticamente las cifras clave del trabajo en Andalucía.",
-
-      description:
-        data?.andalusia_work?.tool_intro?.description || [
-          "La herramienta recompone visualizaciones, rankings, tablas y mapa a partir de datos estructurados."
-        ]
+        "Explora automáticamente las cifras clave del trabajo en Andalucía mediante una lectura territorial, temática e institucional.",
+      stats: [
+        {
+          label: "ONGD activas",
+          rawValue: safe(data?.andalusia_work?.ongd)
+        },
+        {
+          label: "Proyectos",
+          rawValue: safe(data?.andalusia_work?.projects)
+        },
+        {
+          label: "Participantes",
+          rawValue: safe(data?.andalusia_work?.people_total)
+        },
+        {
+          label: "Inversión",
+          rawValue: safe(data?.andalusia_work?.investment_eur),
+          suffix: " €"
+        }
+      ]
     };
   }
 
   if (section === "international") {
     return {
       title: "Trabajo en otros países",
-      summary:
-        "Consulta cobertura internacional, inversión, proyectos y presencia territorial.",
-      description: [
-        "Vista dinámica con mapa mundial, ranking y tablas comparativas.",
-        "Permite una lectura ejecutiva y una exploración detallada."
+      subtitle: "Cobertura geográfica y alcance internacional",
+      text:
+        "Consulta cobertura internacional, inversión, proyectos y presencia territorial mediante una exploración dinámica por países, regiones y organizaciones.",
+      stats: [
+        {
+          label: "Países",
+          rawValue: safe(data?.international_work?.countries)
+        },
+        {
+          label: "Proyectos",
+          rawValue: safe(data?.international_work?.projects)
+        },
+        {
+          label: "Personas",
+          rawValue: safe(data?.international_work?.people_total)
+        },
+        {
+          label: "Inversión",
+          rawValue: safe(data?.international_work?.investment_eur),
+          suffix: " €"
+        }
       ]
     };
   }
@@ -46,10 +80,26 @@ export function buildNarrative(data, section) {
   if (section === "social") {
     return {
       title: "Base social e implantación",
-      summary:
-        "Conoce la estructura humana y social de las entidades participantes.",
-      description: [
-        "Socias, voluntariado, personal contratado, expatriado y órganos de gobierno."
+      subtitle: "Estructura humana y capacidad organizativa",
+      text:
+        "Conoce la dimensión social de las entidades participantes a través de indicadores de membresía, voluntariado, personal y órganos de gobierno.",
+      stats: [
+        {
+          label: "Personas socias",
+          rawValue: safe(data?.social_base?.members)
+        },
+        {
+          label: "Voluntariado",
+          rawValue: safe(data?.social_base?.volunteers_andalusia)
+        },
+        {
+          label: "Personal",
+          rawValue: safe(data?.social_base?.staff_andalusia)
+        },
+        {
+          label: "Juntas y patronatos",
+          rawValue: safe(data?.social_base?.boards_total)
+        }
       ]
     };
   }
@@ -57,21 +107,44 @@ export function buildNarrative(data, section) {
   if (section === "compare") {
     return {
       title: "Comparador anual",
-      summary:
-        "Compara automáticamente indicadores entre ejercicios.",
-      description: [
-        "Sistema preparado para evolucionar como publicación anual interactiva."
+      subtitle: "Cambios y evolución entre ejercicios",
+      text:
+        "Compara automáticamente indicadores entre ejercicios para detectar aumentos, descensos y continuidad en las magnitudes principales.",
+      stats: [
+        {
+          label: "Año actual",
+          value: data?.year || "2024"
+        },
+        {
+          label: "Base comparativa",
+          value: "2023"
+        }
       ]
     };
   }
 
   return {
     title: "Sistema premium de publicación de datos CAONGD",
-    summary:
-      "Plataforma interactiva para visualizar, comparar y explorar los datos del informe anual.",
-    description: [
-      "Lee datos estructurados y regenera secciones temáticas automáticamente.",
-      "Preparada para GitHub Pages y evolución institucional."
+    subtitle: "Plataforma interactiva institucional",
+    text:
+      "Visualiza, compara y explora los datos del informe anual mediante una experiencia integrada de narrativa, mapas, rankings, filtros y tablas.",
+    stats: [
+      {
+        label: "Entidades participantes",
+        rawValue: safe(data?.summary?.entities_participating)
+      },
+      {
+        label: "ONGD participantes",
+        rawValue: safe(data?.summary?.ongd_participants)
+      },
+      {
+        label: "Trabajo Andalucía",
+        rawValue: safe(data?.andalusia_work?.projects)
+      },
+      {
+        label: "Trabajo internacional",
+        rawValue: safe(data?.international_work?.projects)
+      }
     ]
   };
 }
