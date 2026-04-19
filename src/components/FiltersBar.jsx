@@ -1,3 +1,5 @@
+// src/components/FiltersBar.jsx
+
 const DETAIL_OPTIONS = {
   overview: [
     { value: "areas", label: "Áreas Andalucía" }
@@ -42,7 +44,17 @@ export default function FiltersBar({
   const currentDetails = DETAIL_OPTIONS[section] || [];
 
   return (
-    <section className="filters-bar panel">
+    <section
+      className="filters-bar panel panel-section panel-soft"
+      aria-label="Filtros del informe"
+    >
+      <div className="filters-bar__intro">
+        <div className="eyebrow">Exploración</div>
+        <div className="filters-bar__title">
+          Ajusta la lectura del informe
+        </div>
+      </div>
+
       <div className="filter-item">
         <label htmlFor="year-select">Año</label>
         <select
@@ -63,7 +75,10 @@ export default function FiltersBar({
           onChange={(e) => setDetail(e.target.value)}
         >
           {currentDetails.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option
+              key={option.value}
+              value={option.value}
+            >
               {option.label}
             </option>
           ))}
@@ -78,7 +93,10 @@ export default function FiltersBar({
           onChange={(e) => setMetric(e.target.value)}
         >
           {METRIC_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option
+              key={option.value}
+              value={option.value}
+            >
               {option.label}
             </option>
           ))}
