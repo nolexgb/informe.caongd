@@ -3,7 +3,7 @@
   "private": true,
   "version": "3.0.0",
   "type": "module",
-  "description": "Plataforma interactiva premium para visualizar datos del informe CAONGD",
+  "description": "Plataforma interactiva para visualizar datos del informe CAONGD",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
