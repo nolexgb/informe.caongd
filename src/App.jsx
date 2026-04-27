@@ -25,10 +25,6 @@ import {
 
 const YEARS = ["2023", "2024"];
 
-/* =====================================
-   HELPERS
-===================================== */
-
 function getSectionHeading(section) {
   switch (section) {
     case "overview":
@@ -42,7 +38,7 @@ function getSectionHeading(section) {
       return {
         eyebrow: "Trabajo en Andalucía",
         title: "Territorio, sectores y concentración provincial",
-        text: "Explora la implantación territorial en Andalucía y la distribución de la actividad por áreas y métricas."
+        text: "Explora la implantación territorial en Andalucía"
       };
 
     case "international":
@@ -132,10 +128,6 @@ function getDefaultMetric(section, detail) {
 
   return "investment_eur";
 }
-
-/* =====================================
-   APP
-===================================== */
 
 export default function App() {
   const [year, setYear] = useState("2024");
