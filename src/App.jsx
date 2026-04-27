@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-// ❌ ELIMINADO: import "./styles/theme.css";
+import "./styles/theme.css"; // ✅ CRÍTICO: activa todo el diseño
 
 import Header from "./components/Header";
 import FiltersBar from "./components/FiltersBar";
@@ -49,21 +49,21 @@ function getSectionHeading(section) {
       return {
         eyebrow: "Trabajo en otros países",
         title: "Presencia internacional y escala geográfica",
-        text: "Analiza la actividad internacional por países, regiones y categorías con una lectura territorial integrada."
+        text: "Analiza la actividad internacional por países y regiones."
       };
 
     case "social":
       return {
         eyebrow: "Base social",
-        title: "Red asociativa, personas y estructura social",
-        text: "Consulta la dimensión social del ecosistema CAONGD con una mirada estructural y comparativa."
+        title: "Red asociativa y dimensión social",
+        text: "Consulta la dimensión social del ecosistema CAONGD."
       };
 
     case "compare":
       return {
         eyebrow: "Comparativa anual",
-        title: "Evolución de indicadores entre ejercicios",
-        text: "Contrasta automáticamente las principales magnitudes entre años disponibles."
+        title: "Evolución entre ejercicios",
+        text: "Contrasta automáticamente indicadores clave entre años."
       };
 
     default:
@@ -103,8 +103,6 @@ function getDefaultMetric(section, detail) {
   if (section === "andalucia") {
     if (detail === "areas") return "projects";
     if (detail === "provinces") return "investment_eur";
-    if (detail === "ods") return "projects";
-    if (detail === "funding") return "investment_eur";
   }
 
   return "investment_eur";
