@@ -218,4 +218,107 @@ body {
   .filters-bar {
     grid-template-columns: 1fr;
   }
+   /* =====================================
+   FILTERS BAR PREMIUM — DEFINITIVO
+===================================== */
+
+.filters-bar.panel.panel-section.panel-soft {
+  display: grid;
+  grid-template-columns: 1.15fr 0.65fr 1.1fr;
+  gap: 28px;
+  align-items: start;
+  padding: 28px;
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
+    rgba(15, 59, 76, 0.72);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 24px 60px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.filters-bar__title {
+  margin: 8px 0 10px;
+  color: #f8fafc;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.filters-bar__text {
+  margin: 0;
+  color: #dbe7ee;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.filter-item {
+  min-width: 0;
+}
+
+.filter-label {
+  margin-bottom: 12px;
+  color: #f8fafc;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-pills .filter-pill {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05)) !important;
+  color: #edf6f8 !important;
+  padding: 10px 15px !important;
+  border-radius: 999px !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  cursor: pointer;
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.filter-pills .filter-pill:hover {
+  transform: translateY(-2px);
+  border-color: rgba(122,201,67,0.8) !important;
+  background:
+    linear-gradient(135deg, rgba(122,201,67,0.28), rgba(180,230,107,0.14)) !important;
+  box-shadow:
+    0 14px 28px rgba(0,0,0,0.22),
+    0 0 0 3px rgba(122,201,67,0.12);
+}
+
+.filter-pills .filter-pill.is-active,
+.filter-pills .filter-pill[aria-pressed="true"] {
+  color: #08212a !important;
+  border-color: rgba(188,239,104,0.95) !important;
+  background:
+    linear-gradient(135deg, #7ac943 0%, #b8ec6c 100%) !important;
+  box-shadow:
+    0 16px 34px rgba(122,201,67,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.55);
+}
+
+.filter-pills .filter-pill:focus-visible {
+  outline: 3px solid rgba(184,236,108,0.42);
+  outline-offset: 3px;
+}
+
+@media (max-width: 960px) {
+  .filters-bar.panel.panel-section.panel-soft {
+    grid-template-columns: 1fr;
+  }
 }
