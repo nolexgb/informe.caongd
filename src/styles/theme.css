@@ -445,4 +445,141 @@ body {
   .filters-bar__intro {
     margin-bottom: 10px;
   }
+   /* =====================================
+   COMPARE PANEL PRO
+===================================== */
+
+.compare-panel {
+  position: relative;
+}
+
+/* GRID */
+
+.compare-grid {
+  margin-top: 18px;
+}
+
+/* CARD */
+
+.compare-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 22px;
+  border: 1px solid #e6edf2;
+  transition: all 0.25s ease;
+}
+
+/* HOVER PREMIUM */
+
+.compare-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+}
+
+/* TOP */
+
+.compare-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* CURRENT VALUE (PROTAGONISTA) */
+
+.compare-current {
+  font-size: 30px;
+  font-weight: 700;
+  margin-top: 14px;
+  color: #0f172a;
+}
+
+/* PREVIOUS */
+
+.compare-previous {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 6px;
+}
+
+/* DELTA GRANDE */
+
+.compare-delta {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* COLORES SEMÁNTICOS */
+
+.compare-delta.up {
+  color: #16a34a;
+}
+
+.compare-delta.down {
+  color: #dc2626;
+}
+
+.compare-delta.flat {
+  color: #475569;
+}
+
+/* BADGE */
+
+.compare-status {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+/* BADGE COLORS */
+
+.compare-status--up {
+  background: #e7f7ed;
+  color: #15803d;
+}
+
+.compare-status--down {
+  background: #fdecec;
+  color: #b91c1c;
+}
+
+.compare-status--flat {
+  background: #eef2f7;
+  color: #475569;
+}
+
+/* =====================================
+   INSIGHT VISUAL EXTRA (LÍNEA LATERAL)
+===================================== */
+
+.compare-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 20px 0 0 20px;
+  opacity: 0.9;
+}
+
+.compare-card .up ~ .compare-current,
+.compare-card::before {
+  background: transparent;
+}
+
+/* colores dinámicos usando clases */
+
+.compare-card:has(.compare-delta.up)::before {
+  background: #16a34a;
+}
+
+.compare-card:has(.compare-delta.down)::before {
+  background: #dc2626;
+}
+
+.compare-card:has(.compare-delta.flat)::before {
+  background: #94a3b8;
 }
