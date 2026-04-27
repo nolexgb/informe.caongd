@@ -3,38 +3,42 @@
 import { formatValue, getDelta } from "../utils/format";
 import MotionSection from "./MotionSection";
 
+function safeNumber(value) {
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
 function buildItems(current, previous) {
   if (!current || !previous) return [];
 
   return [
     {
       label: "Proyectos internacionales",
-      current: current.international_work.projects,
-      previous: previous.international_work.projects,
+      current: safeNumber(current?.international_work?.projects),
+      previous: safeNumber(previous?.international_work?.projects),
       type: "number"
     },
     {
       label: "Inversión internacional",
-      current: current.international_work.investment_eur,
-      previous: previous.international_work.investment_eur,
+      current: safeNumber(current?.international_work?.investment_eur),
+      previous: safeNumber(previous?.international_work?.investment_eur),
       type: "currency"
     },
     {
       label: "Proyectos en Andalucía",
-      current: current.andalusia_work.projects,
-      previous: previous.andalusia_work.projects,
+      current: safeNumber(current?.andalusia_work?.projects),
+      previous: safeNumber(previous?.andalusia_work?.projects),
       type: "number"
     },
     {
       label: "Inversión en Andalucía",
-      current: current.andalusia_work.investment_eur,
-      previous: previous.andalusia_work.investment_eur,
+      current: safeNumber(current?.andalusia_work?.investment_eur),
+      previous: safeNumber(previous?.andalusia_work?.investment_eur),
       type: "currency"
     },
     {
       label: "Base social",
-      current: current.social_base.members,
-      previous: previous.social_base.members,
+      current: safeNumber(current?.social_base?.members),
+      previous: safeNumber(previous?.social_base?.members),
       type: "number"
     }
   ];
@@ -62,6 +66,10 @@ function getBadge(delta) {
     text: "Estable",
     className: "flat"
   };
+}
+
+function getAbsoluteChange(current, previous) {
+  return safeNumber(current) - safeNumber(previous);
 }
 
 export default function ComparePanel({
@@ -94,7 +102,7 @@ export default function ComparePanel({
 
   return (
     <section className="panel panel-table compare-panel compare-panel--premium">
-      <div className="panel-head">
+      <div className="panel-head compare-panel__head">
         <div>
           <div className="eyebrow">Comparador anual</div>
 
@@ -113,6 +121,7 @@ export default function ComparePanel({
         {items.map((item, index) => {
           const delta = getDelta(item.current, item.previous);
           const badge = getBadge(delta);
+          const absoluteChange = getAbsoluteChange(item.current, item.previous);
 
           return (
             <MotionSection
@@ -120,7 +129,9 @@ export default function ComparePanel({
               delay={index * 0.05}
               y={20}
             >
-              <article className="compare-card premium-compare-card">
+              <article
+                className={`compare-card premium-compare-card compare-card--${badge.className}`}
+              >
                 <div className="compare-card__top">
                   <div className="eyebrow">{item.label}</div>
 
@@ -136,15 +147,16 @@ export default function ComparePanel({
                 </div>
 
                 <div className="compare-previous">
-                  {previousYear}:{" "}
-                  {formatValue(item.previous, item.type)}
+                  {previousYear}: {formatValue(item.previous, item.type)}
                 </div>
 
-                <div
-                  className={`compare-delta ${badge.className}`}
-                >
-                  {badge.symbol}{" "}
-                  {Math.abs(delta).toFixed(1)}%
+                <div className={`compare-delta ${badge.className}`}>
+                  {badge.symbol} {Math.abs(delta).toFixed(1)}%
+                </div>
+
+                <div className="compare-absolute">
+                  Variación absoluta:{" "}
+                  {formatValue(Math.abs(absoluteChange), item.type)}
                 </div>
               </article>
             </MotionSection>
