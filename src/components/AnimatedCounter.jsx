@@ -7,22 +7,15 @@ function easeOutCubic(t) {
 }
 
 function extractNumber(value) {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value !== "string") {
-    return null;
-  }
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value !== "string") return null;
 
   const cleaned = value
     .trim()
     .replace(/\s/g, "")
     .replace(/[^\d.,-]/g, "");
 
-  if (!cleaned) {
-    return null;
-  }
+  if (!cleaned) return null;
 
   const hasComma = cleaned.includes(",");
   const hasDot = cleaned.includes(".");
@@ -44,9 +37,13 @@ function getDecimals(num) {
   if (!Number.isFinite(num)) return 0;
 
   const text = String(num);
-  if (!text.includes(".")) return 0;
+  return text.includes(".") ? text.split(".")[1].length : 0;
+}
 
-  return text.split(".")[1].length;
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 }
 
 export default function AnimatedCounter({
@@ -55,6 +52,7 @@ export default function AnimatedCounter({
   locale = "es-ES"
 }) {
   const numericValue = useMemo(() => extractNumber(value), [value]);
+
   const decimals = useMemo(
     () => (numericValue !== null ? getDecimals(numericValue) : 0),
     [numericValue]
@@ -79,6 +77,12 @@ export default function AnimatedCounter({
       return;
     }
 
+    if (prefersReducedMotion()) {
+      setDisplay(numericValue);
+      previousValueRef.current = numericValue;
+      return;
+    }
+
     const startValue =
       typeof previousValueRef.current === "number"
         ? previousValueRef.current
@@ -92,8 +96,7 @@ export default function AnimatedCounter({
       const progress = Math.min(elapsed / duration, 1);
       const eased = easeOutCubic(progress);
 
-      const current =
-        startValue + (endValue - startValue) * eased;
+      const current = startValue + (endValue - startValue) * eased;
 
       const rounded =
         decimals > 0
