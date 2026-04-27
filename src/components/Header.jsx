@@ -1,42 +1,78 @@
-// src/components/Header.jsx
+.institutional-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
+  border-bottom: 1px solid #e6edf2;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
 
-const YEAR = "2024";
+.institutional-header__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  gap: 18px;
+}
 
-export default function Header() {
-  return (
-    <header className="institutional-header">
-      <div className="page-wrap institutional-header__inner">
+.institutional-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
 
-        {/* LOGO + IDENTIDAD */}
-        <div className="institutional-brand">
+.institutional-brand__logo {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  padding: 6px;
+  box-shadow:
+    0 6px 18px rgba(15, 23, 42, 0.12),
+    inset 0 0 0 1px rgba(15, 23, 42, 0.06);
+}
 
-          <div className="institutional-brand__logo">
-            <img
-              src={`${import.meta.env.BASE_URL}assets/logo-caongd.jpg`}
-              alt="CAONGD"
-            />
-          </div>
+.institutional-brand__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
 
-          <div className="institutional-brand__content">
-            <div className="institutional-brand__title">
-              CAONGD Data Explorer
-            </div>
+.institutional-brand__content {
+  min-width: 0;
+}
 
-            <div className="institutional-brand__subtitle">
-              Coordinadora Andaluza de ONGD · Informe interactivo
-            </div>
-          </div>
+.institutional-brand__title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a !important;
+  line-height: 1.2;
+}
 
-        </div>
+.institutional-brand__subtitle {
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569 !important;
+  line-height: 1.25;
+}
 
-        {/* META */}
-        <div className="institutional-meta">
-          <span className="institutional-pill">
-            Edición {YEAR}
-          </span>
-        </div>
+.institutional-meta {
+  display: flex;
+  align-items: center;
+}
 
-      </div>
-    </header>
-  );
+.institutional-pill {
+  font-size: 12px;
+  font-weight: 800;
+  background: #eaf7e3;
+  color: #2f6f2c !important;
+  padding: 7px 12px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(122, 201, 67, 0.18);
+  white-space: nowrap;
 }
