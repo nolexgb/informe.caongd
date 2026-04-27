@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import "./styles/theme.css";
+// ❌ ELIMINADO: import "./styles/theme.css";
 
 import Header from "./components/Header";
 import FiltersBar from "./components/FiltersBar";
@@ -24,6 +24,10 @@ import {
 } from "./utils/selectors";
 
 const YEARS = ["2023", "2024"];
+
+/* =====================================
+   HELPERS
+===================================== */
 
 function getSectionHeading(section) {
   switch (section) {
@@ -77,35 +81,16 @@ function getAllowedMetrics(section) {
       return ["investment_eur", "projects", "people", "ongd"];
 
     case "andalucia":
-      return [
-        "investment_eur",
-        "projects",
-        "people",
-        "ongd",
-        "total"
-      ];
+      return ["investment_eur", "projects", "people", "ongd", "total"];
 
     case "international":
-      return [
-        "investment_eur",
-        "projects",
-        "people",
-        "countries",
-        "ongd"
-      ];
+      return ["investment_eur", "projects", "people", "countries", "ongd"];
 
     case "social":
       return ["people", "ongd", "total"];
 
     case "compare":
-      return [
-        "investment_eur",
-        "projects",
-        "people",
-        "ongd",
-        "countries",
-        "total"
-      ];
+      return ["investment_eur", "projects", "people", "ongd", "countries", "total"];
 
     default:
       return ["investment_eur"];
@@ -122,12 +107,12 @@ function getDefaultMetric(section, detail) {
     if (detail === "funding") return "investment_eur";
   }
 
-  if (section === "international") {
-    return "investment_eur";
-  }
-
   return "investment_eur";
 }
+
+/* =====================================
+   APP
+===================================== */
 
 export default function App() {
   const [year, setYear] = useState("2024");
@@ -138,6 +123,10 @@ export default function App() {
   const [dataByYear, setDataByYear] = useState({});
   const [loading, setLoading] = useState(true);
 
+  /* =========================
+     DATA LOAD
+  ========================= */
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -146,16 +135,14 @@ export default function App() {
             const res = await fetch(
               `${import.meta.env.BASE_URL}data/data-${y}.json`
             );
-
             const json = await res.json();
-
             return [y, json];
           })
         );
 
         setDataByYear(Object.fromEntries(entries));
       } catch (error) {
-        console.error(error);
+        console.error("Error cargando datos:", error);
       } finally {
         setLoading(false);
       }
@@ -163,6 +150,10 @@ export default function App() {
 
     loadData();
   }, []);
+
+  /* =========================
+     STATE LOGIC
+  ========================= */
 
   useEffect(() => {
     if (section === "overview") setDetail("areas");
@@ -177,58 +168,48 @@ export default function App() {
     const suggested = getDefaultMetric(section, detail);
 
     if (!allowed.includes(metric)) {
-      setMetric(
-        allowed.includes(suggested)
-          ? suggested
-          : allowed[0]
-      );
+      setMetric(allowed.includes(suggested) ? suggested : allowed[0]);
     }
   }, [section, detail, metric]);
 
+  /* =========================
+     DATA DERIVED
+  ========================= */
+
   const current = dataByYear[year];
-
-  const comparisonYear =
-    year === "2024" ? "2023" : "2024";
-
+  const comparisonYear = year === "2024" ? "2023" : "2024";
   const previous = dataByYear[comparisonYear];
 
   const cards = useMemo(
-    () =>
-      current
-        ? buildCards(current, section)
-        : [],
+    () => (current ? buildCards(current, section) : []),
     [current, section]
   );
 
   const narrative = useMemo(
-    () =>
-      current
-        ? buildNarrative(current, section)
-        : null,
+    () => (current ? buildNarrative(current, section) : null),
     [current, section]
   );
 
   const rows = useMemo(
-    () =>
-      current
-        ? buildRows(current, section, detail)
-        : [],
+    () => (current ? buildRows(current, section, detail) : []),
     [current, section, detail]
   );
 
   const columns = useMemo(
-    () =>
-      buildTableColumns(section, detail, rows),
+    () => buildTableColumns(section, detail, rows),
     [section, detail, rows]
   );
 
   const ranking = useMemo(
-    () =>
-      buildTopRanking(rows, metric, 8),
+    () => buildTopRanking(rows, metric, 8),
     [rows, metric]
   );
 
   const heading = getSectionHeading(section);
+
+  /* =========================
+     LOADING
+  ========================= */
 
   if (loading) {
     return (
@@ -242,15 +223,16 @@ export default function App() {
     );
   }
 
+  /* =========================
+     UI
+  ========================= */
+
   return (
     <div className="app-shell">
       <Header />
 
       <div className="page-wrap">
-        <NarrativeHero
-          narrative={narrative}
-          year={year}
-        />
+        <NarrativeHero narrative={narrative} year={year} />
       </div>
 
       <StickySectionNav
@@ -259,12 +241,11 @@ export default function App() {
       />
 
       <main className="page-wrap app-main">
+
         <MotionSection delay={0.05}>
           <section className="section-space">
-            <div className="panel panel-section panel-soft">
-              <div className="eyebrow">
-                {heading.eyebrow}
-              </div>
+            <div className="panel panel-section">
+              <div className="eyebrow">{heading.eyebrow}</div>
 
               <h2 className="section-block__title">
                 {heading.title}
@@ -321,10 +302,7 @@ export default function App() {
             </section>
 
             <section className="panel panel-section section-space">
-              <DataTable
-                rows={rows}
-                columns={columns}
-              />
+              <DataTable rows={rows} columns={columns} />
             </section>
           </>
         )}
