@@ -7,9 +7,12 @@ export default function Header() {
     <header className="institutional-header">
       <div className="page-wrap institutional-header__inner">
         <div className="institutional-brand">
-          <div className="institutional-brand__badge">
-            CA
-          </div>
+          <div className="institutional-brand__logo">
+  <img
+    src="https://caongd.org/wp-content/uploads/2020/10/logo-caongd-sq.jpg"
+    alt="CAONGD"
+  />
+</div>
 
           <div className="institutional-brand__content">
             <div className="institutional-brand__title">
