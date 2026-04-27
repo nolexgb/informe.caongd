@@ -7,8 +7,13 @@ function easeOutCubic(t) {
 }
 
 function extractNumber(value) {
-  if (typeof value === "number" && Number.isFinite(value)) return value;
-  if (typeof value !== "string") return null;
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value !== "string") {
+    return null;
+  }
 
   const cleaned = value
     .trim()
@@ -51,10 +56,16 @@ export default function AnimatedCounter({
   duration = 1200,
   locale = "es-ES"
 }) {
-  const numericValue = useMemo(() => extractNumber(value), [value]);
+  const numericValue = useMemo(
+    () => extractNumber(value),
+    [value]
+  );
 
   const decimals = useMemo(
-    () => (numericValue !== null ? getDecimals(numericValue) : 0),
+    () =>
+      numericValue !== null
+        ? getDecimals(numericValue)
+        : 0,
     [numericValue]
   );
 
@@ -74,13 +85,13 @@ export default function AnimatedCounter({
 
     if (numericValue === null) {
       setDisplay(value);
-      return;
+      return undefined;
     }
 
     if (prefersReducedMotion()) {
       setDisplay(numericValue);
       previousValueRef.current = numericValue;
-      return;
+      return undefined;
     }
 
     const startValue =
@@ -96,7 +107,8 @@ export default function AnimatedCounter({
       const progress = Math.min(elapsed / duration, 1);
       const eased = easeOutCubic(progress);
 
-      const current = startValue + (endValue - startValue) * eased;
+      const current =
+        startValue + (endValue - startValue) * eased;
 
       const rounded =
         decimals > 0
