@@ -25,43 +25,68 @@ function safe(value, fallback = 0) {
   return value ?? fallback;
 }
 
-function topLabel(rows = [], metric = "investment_eur") {
+function topItem(rows = [], metric = "investment_eur") {
   const valid = rows.filter(
     (row) => typeof row?.[metric] === "number"
   );
 
   if (!valid.length) return null;
 
-  const best = [...valid].sort(
-    (a, b) => b[metric] - a[metric]
-  )[0];
+  return [...valid].sort((a, b) => b[metric] - a[metric])[0];
+}
 
-  return best?.name || null;
+function topLabel(rows = [], metric = "investment_eur") {
+  return topItem(rows, metric)?.name || null;
+}
+
+function getShareLabel(rows = [], metric = "investment_eur") {
+  const top = topItem(rows, metric);
+  if (!top) return null;
+
+  const total = rows.reduce(
+    (sum, row) =>
+      sum + (typeof row?.[metric] === "number" ? row[metric] : 0),
+    0
+  );
+
+  if (!total) return null;
+
+  const share = (top[metric] / total) * 100;
+
+  return {
+    name: top.name,
+    share: Math.round(share)
+  };
 }
 
 /* =====================================
-   NARRATIVE (MEJORADO)
+   NARRATIVE (AVANZADO)
 ===================================== */
 
 export function buildNarrative(data, section) {
   if (!data) return null;
 
-  /* ---------- ANDALUCÍA ---------- */
   if (section === "andalucia") {
-    const topProvince = topLabel(
+    const provinceShare = getShareLabel(
       data?.andalusia_work?.province_source_table,
       "investment_eur"
+    );
+
+    const topArea = topLabel(
+      data?.andalusia_work?.areas,
+      "projects"
     );
 
     return {
       title: "Trabajo en Andalucía",
 
-      subtitle: topProvince
-        ? `${topProvince} concentra la mayor inversión territorial`
+      subtitle: provinceShare
+        ? `${provinceShare.name} concentra el ${provinceShare.share}% de la inversión territorial`
         : "Distribución territorial y áreas de trabajo",
 
-      text:
-        "Análisis de implantación territorial, volumen de actividad y financiación en Andalucía mediante una lectura integrada por provincias, áreas y actores.",
+      text: topArea
+        ? `La actividad en Andalucía combina implantación provincial y áreas de intervención. ${topArea} destaca como el ámbito con mayor volumen de proyectos.`
+        : "Análisis territorial, financiación y actividad en Andalucía.",
 
       stats: [
         {
@@ -85,22 +110,27 @@ export function buildNarrative(data, section) {
     };
   }
 
-  /* ---------- INTERNACIONAL ---------- */
   if (section === "international") {
-    const topCountry = topLabel(
+    const countryShare = getShareLabel(
       data?.international_work?.top_countries_investment,
+      "investment_eur"
+    );
+
+    const topRegion = topLabel(
+      data?.international_work?.geographic_areas,
       "investment_eur"
     );
 
     return {
       title: "Trabajo en otros países",
 
-      subtitle: topCountry
-        ? `${topCountry} lidera la inversión internacional`
-        : "Cobertura geográfica y alcance internacional",
+      subtitle: countryShare
+        ? `${countryShare.name} representa el ${countryShare.share}% de la inversión`
+        : "Cobertura internacional",
 
-      text:
-        "Exploración de la actividad internacional por países, regiones y organizaciones, con foco en alcance territorial, inversión y población beneficiaria.",
+      text: topRegion
+        ? `${topRegion} es la región con mayor peso económico dentro de la acción internacional.`
+        : "Análisis global de la actividad internacional.",
 
       stats: [
         {
@@ -124,29 +154,34 @@ export function buildNarrative(data, section) {
     };
   }
 
-  /* ---------- SOCIAL ---------- */
   if (section === "social") {
+    const members = safe(data?.social_base?.members);
+    const volunteers = safe(data?.social_base?.volunteers_andalusia);
+    const staff = safe(data?.social_base?.staff_andalusia);
+
     return {
       title: "Base social e implantación",
 
       subtitle:
-        "Estructura humana y capacidad organizativa",
+        volunteers > staff
+          ? "El voluntariado es el principal motor social"
+          : "Estructura organizativa consolidada",
 
       text:
-        "Dimensión social del ecosistema CAONGD a través de indicadores de membresía, voluntariado, personal y órganos de gobierno.",
+        `La base social integra ${members} personas socias, ${volunteers} voluntarias y ${staff} profesionales.`,
 
       stats: [
         {
           label: "Personas socias",
-          rawValue: safe(data?.social_base?.members)
+          rawValue: members
         },
         {
           label: "Voluntariado",
-          rawValue: safe(data?.social_base?.volunteers_andalusia)
+          rawValue: volunteers
         },
         {
           label: "Personal",
-          rawValue: safe(data?.social_base?.staff_andalusia)
+          rawValue: staff
         },
         {
           label: "Órganos de gobierno",
@@ -156,17 +191,12 @@ export function buildNarrative(data, section) {
     };
   }
 
-  /* ---------- COMPARATIVA ---------- */
   if (section === "compare") {
     return {
       title: "Comparador anual",
-
-      subtitle:
-        "Evolución de indicadores entre ejercicios",
-
+      subtitle: "Evolución entre ejercicios",
       text:
-        "Lectura ejecutiva de la evolución de las principales magnitudes entre años, identificando crecimiento, descenso o estabilidad.",
-
+        "Análisis de cambios en actividad, inversión y alcance social.",
       stats: [
         {
           label: "Año actual",
@@ -180,16 +210,19 @@ export function buildNarrative(data, section) {
     };
   }
 
-  /* ---------- OVERVIEW ---------- */
+  const totalProjects =
+    safe(data?.andalusia_work?.projects) +
+    safe(data?.international_work?.projects);
+
   return {
     title:
       "Sistema de publicación de datos de la Coordinadora Andaluza de ONGD",
 
     subtitle:
-      "Plataforma interactiva de análisis",
+      `${totalProjects} proyectos entre Andalucía y ámbito internacional`,
 
     text:
-      "Explora el informe anual mediante una experiencia integrada de narrativa, mapas, rankings, filtros y tablas.",
+      "Plataforma interactiva para explorar el informe anual mediante datos, mapas y comparativas.",
 
     stats: [
       {
@@ -213,7 +246,7 @@ export function buildNarrative(data, section) {
 }
 
 /* =====================================
-   KPI CARDS (PRO)
+   KPI CARDS
 ===================================== */
 
 export function buildCards(data, section) {
@@ -225,13 +258,13 @@ export function buildCards(data, section) {
         label: "Proyectos",
         value: safe(data?.andalusia_work?.projects),
         type: "number",
-        note: "Actividad total en Andalucía"
+        note: "Actividad en Andalucía"
       },
       {
         label: "Inversión",
         value: safe(data?.andalusia_work?.investment_eur),
         type: "currency",
-        note: "Volumen económico movilizado"
+        note: "Volumen económico"
       },
       {
         label: "Personas",
@@ -243,7 +276,7 @@ export function buildCards(data, section) {
         label: "ONGD",
         value: safe(data?.andalusia_work?.ongd),
         type: "number",
-        note: "Ecosistema organizativo"
+        note: "Ecosistema activo"
       }
     ];
   }
@@ -266,13 +299,13 @@ export function buildCards(data, section) {
         label: "Personas",
         value: safe(data?.international_work?.people_total),
         type: "number",
-        note: `${safe(data?.international_work?.women_pct)}% mujeres`
+        note: "Alcance"
       },
       {
         label: "Inversión",
         value: safe(data?.international_work?.investment_eur),
         type: "currency",
-        note: "Financiación internacional"
+        note: "Financiación"
       }
     ];
   }
@@ -282,26 +315,22 @@ export function buildCards(data, section) {
       {
         label: "Personas socias",
         value: safe(data?.social_base?.members),
-        type: "number",
-        note: "Base social activa"
+        type: "number"
       },
       {
         label: "Voluntariado",
         value: safe(data?.social_base?.volunteers_andalusia),
-        type: "number",
-        note: "Participación ciudadana"
+        type: "number"
       },
       {
         label: "Personal",
         value: safe(data?.social_base?.staff_andalusia),
-        type: "number",
-        note: "Capacidad operativa"
+        type: "number"
       },
       {
         label: "Gobernanza",
         value: safe(data?.social_base?.boards_total),
-        type: "number",
-        note: "Órganos de decisión"
+        type: "number"
       }
     ];
   }
@@ -310,26 +339,22 @@ export function buildCards(data, section) {
     {
       label: "Entidades",
       value: safe(data?.summary?.entities_participating),
-      type: "number",
-      note: "Participación total"
+      type: "number"
     },
     {
       label: "ONGD",
       value: safe(data?.summary?.ongd_participants),
-      type: "number",
-      note: "Base organizativa"
+      type: "number"
     },
     {
       label: "Andalucía",
       value: safe(data?.andalusia_work?.projects),
-      type: "number",
-      note: "Proyectos territoriales"
+      type: "number"
     },
     {
       label: "Internacional",
       value: safe(data?.international_work?.projects),
-      type: "number",
-      note: "Proyectos globales"
+      type: "number"
     }
   ];
 }
@@ -360,11 +385,6 @@ export function buildRows(data, section, detail) {
         name: "Personas socias",
         total: safe(data?.social_base?.members),
         women_pct: safe(data?.social_base?.members_women_pct)
-      },
-      {
-        name: "Voluntariado",
-        total: safe(data?.social_base?.volunteers_andalusia),
-        women_pct: safe(data?.social_base?.volunteers_women_pct)
       }
     ];
   }
@@ -379,24 +399,7 @@ export function buildRows(data, section, detail) {
 export function buildTableColumns(section, detail, rows) {
   if (!rows?.length) return [];
 
-  if (section === "social") {
-    return [
-      { key: "name", label: "Indicador" },
-      { key: "total", label: "Total", type: "number" },
-      { key: "women_pct", label: "% mujeres", type: "percent" }
-    ];
-  }
-
-  const preferred = [
-    "name",
-    "countries",
-    "ongd",
-    "projects",
-    "people",
-    "investment_eur"
-  ];
-
-  const keys = preferred.filter((key) => key in rows[0]);
+  const keys = Object.keys(rows[0]);
 
   return keys.map((key) => ({
     key,
