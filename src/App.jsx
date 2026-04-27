@@ -176,12 +176,11 @@ export default function App() {
     const allowed = getAllowedMetrics(section);
     const suggested = getDefaultMetric(section, detail);
 
-    if (!allowed.includes(metric)) {
-      setMetric(allowed.includes(suggested) ? suggested : allowed[0]);
-      return;
+    if (allowed.includes(suggested)) {
+      setMetric(suggested);
+    } else if (!allowed.includes(metric)) {
+      setMetric(allowed[0]);
     }
-
-    setMetric(suggested);
   }, [section, detail]);
 
   const current = dataByYear[year];
@@ -220,9 +219,7 @@ export default function App() {
     return (
       <div className="loading-screen-pro">
         <div className="loading-card-pro panel">
-          <h1 className="loading-title">
-            Cargando plataforma...
-          </h1>
+          <h1 className="loading-title">Cargando plataforma...</h1>
         </div>
       </div>
     );
@@ -284,28 +281,35 @@ export default function App() {
             <KPICards cards={cards} />
 
             <section className="content-grid section-space">
-              <div className="panel panel-section">
-                {showMap ? (
-                  <MapPanel
-                    section={section}
-                    detail={detail}
-                    rows={rows}
-                    metric={metric}
-                  />
-                ) : (
+              {showMap ? (
+                <>
+                  <div className="panel panel-section">
+                    <MapPanel
+                      section={section}
+                      detail={detail}
+                      rows={rows}
+                      metric={metric}
+                    />
+                  </div>
+
+                  <div className="panel panel-section">
+                    <RankingList
+                      rows={ranking}
+                      metric={metric}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div
+                  className="panel panel-section"
+                  style={{ gridColumn: "1 / -1" }}
+                >
                   <RankingList
                     rows={ranking}
                     metric={metric}
                   />
-                )}
-              </div>
-
-              <div className="panel panel-section">
-                <RankingList
-                  rows={ranking}
-                  metric={metric}
-                />
-              </div>
+                </div>
+              )}
             </section>
 
             <section className="panel panel-section section-space">
