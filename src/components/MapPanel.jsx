@@ -8,25 +8,16 @@ import {
 } from "react-leaflet";
 
 import { getCoords } from "../utils/coords";
-import {
-  normalizeMetric,
-  formatValue
-} from "../utils/format";
+import { normalizeMetric, formatValue } from "../utils/format";
 
-const GEO_DETAILS = ["provinces", "countries", "regions"];
+const GEO_DETAILS = ["provinces", "countries", "regions", "top_countries_investment"];
 
 function getMapConfig(section) {
   if (section === "andalucia") {
-    return {
-      center: [37.45, -4.5],
-      zoom: 7
-    };
+    return { center: [37.45, -4.5], zoom: 7 };
   }
 
-  return {
-    center: [18, 2],
-    zoom: 2
-  };
+  return { center: [18, 2], zoom: 2 };
 }
 
 function getMetricLabel(metric) {
@@ -63,6 +54,17 @@ function getPointValue(row, metric) {
   );
 }
 
+function getRowCoords(row) {
+  if (
+    Number.isFinite(Number(row?.lat)) &&
+    Number.isFinite(Number(row?.lng))
+  ) {
+    return [Number(row.lat), Number(row.lng)];
+  }
+
+  return getCoords(row?.name);
+}
+
 export default function MapPanel({
   section,
   detail,
@@ -86,7 +88,7 @@ export default function MapPanel({
 
   const points = rows
     .map((row) => {
-      const coords = getCoords(row?.name);
+      const coords = getRowCoords(row);
 
       if (!coords) return null;
 
@@ -153,14 +155,9 @@ export default function MapPanel({
         {points.map((row) => {
           const numericValue = Number(row.value) || 0;
 
-          const radius = normalizeMetric(
-            numericValue,
-            8,
-            28
-          );
+          const radius = normalizeMetric(numericValue, 8, 28);
 
-          const opacity =
-            0.42 + (numericValue / maxValue) * 0.42;
+          const opacity = 0.42 + (numericValue / maxValue) * 0.42;
 
           return (
             <CircleMarker
@@ -176,9 +173,7 @@ export default function MapPanel({
             >
               <Popup>
                 <div className="map-popup">
-                  <div className="map-popup__title">
-                    {row.name}
-                  </div>
+                  <div className="map-popup__title">{row.name}</div>
 
                   <div className="map-popup__metric">
                     <span>{metricLabel}</span>
@@ -186,6 +181,12 @@ export default function MapPanel({
                       {formatValue(numericValue, metricType)}
                     </strong>
                   </div>
+
+                  {row.region && (
+                    <div className="map-popup__region">
+                      {row.region}
+                    </div>
+                  )}
                 </div>
               </Popup>
             </CircleMarker>
