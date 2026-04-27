@@ -1,28 +1,29 @@
-// src/components/Header.jsx
-
 const YEAR = "2024";
 
 export default function Header() {
   return (
     <header className="institutional-header">
       <div className="page-wrap institutional-header__inner">
+        
         <div className="institutional-brand">
+          
           <div className="institutional-brand__logo">
-  <img
-    src="https://caongd.org/wp-content/uploads/2020/10/logo-caongd-sq.jpg"
-    alt="CAONGD"
-  />
-</div>
+            <img
+              src="https://caongd.org/wp-content/uploads/2020/10/logo-caongd-sq.jpg"
+              alt="CAONGD"
+            />
+          </div>
 
           <div className="institutional-brand__content">
             <div className="institutional-brand__title">
-              CAONGD Data Explorer
+              Data Explorer
             </div>
 
             <div className="institutional-brand__subtitle">
               Coordinadora Andaluza de ONGD · Informe interactivo
             </div>
           </div>
+
         </div>
 
         <div className="institutional-meta">
@@ -30,6 +31,7 @@ export default function Header() {
             Edición {YEAR}
           </span>
         </div>
+
       </div>
     </header>
   );
