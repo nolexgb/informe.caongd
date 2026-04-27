@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import "./styles/theme.css"; // ✅ CRÍTICO: activa todo el diseño
+import "./styles/theme.css";
 
 import Header from "./components/Header";
 import FiltersBar from "./components/FiltersBar";
@@ -25,9 +25,7 @@ import {
 
 const YEARS = ["2023", "2024"];
 
-/* =====================================
-   HELPERS
-===================================== */
+const MAP_DETAILS = ["provinces", "countries", "regions"];
 
 function getSectionHeading(section) {
   switch (section) {
@@ -42,7 +40,7 @@ function getSectionHeading(section) {
       return {
         eyebrow: "Trabajo en Andalucía",
         title: "Territorio, sectores y concentración provincial",
-        text: "Explora la implantación territorial en Andalucía"
+        text: "Explora la implantación territorial en Andalucía."
       };
 
     case "international":
@@ -103,14 +101,34 @@ function getDefaultMetric(section, detail) {
   if (section === "andalucia") {
     if (detail === "areas") return "projects";
     if (detail === "provinces") return "investment_eur";
+    if (detail === "ods") return "projects";
+    if (detail === "funding") return "total";
+  }
+
+  if (section === "international") {
+    if (detail === "regions") return "investment_eur";
+    if (detail === "countries") return "investment_eur";
   }
 
   return "investment_eur";
 }
 
-/* =====================================
-   APP
-===================================== */
+function getDefaultDetail(section) {
+  switch (section) {
+    case "overview":
+      return "areas";
+    case "andalucia":
+      return "areas";
+    case "international":
+      return "regions";
+    case "social":
+      return "social";
+    case "compare":
+      return "comparison";
+    default:
+      return "areas";
+  }
+}
 
 export default function App() {
   const [year, setYear] = useState("2024");
@@ -121,10 +139,6 @@ export default function App() {
   const [dataByYear, setDataByYear] = useState({});
   const [loading, setLoading] = useState(true);
 
-  /* =========================
-     DATA LOAD
-  ========================= */
-
   useEffect(() => {
     async function loadData() {
       try {
@@ -133,6 +147,11 @@ export default function App() {
             const res = await fetch(
               `${import.meta.env.BASE_URL}data/data-${y}.json`
             );
+
+            if (!res.ok) {
+              throw new Error(`No se pudo cargar data-${y}.json`);
+            }
+
             const json = await res.json();
             return [y, json];
           })
@@ -149,16 +168,8 @@ export default function App() {
     loadData();
   }, []);
 
-  /* =========================
-     STATE LOGIC
-  ========================= */
-
   useEffect(() => {
-    if (section === "overview") setDetail("areas");
-    if (section === "andalucia") setDetail("areas");
-    if (section === "international") setDetail("regions");
-    if (section === "social") setDetail("social");
-    if (section === "compare") setDetail("comparison");
+    setDetail(getDefaultDetail(section));
   }, [section]);
 
   useEffect(() => {
@@ -167,12 +178,11 @@ export default function App() {
 
     if (!allowed.includes(metric)) {
       setMetric(allowed.includes(suggested) ? suggested : allowed[0]);
+      return;
     }
-  }, [section, detail, metric]);
 
-  /* =========================
-     DATA DERIVED
-  ========================= */
+    setMetric(suggested);
+  }, [section, detail]);
 
   const current = dataByYear[year];
   const comparisonYear = year === "2024" ? "2023" : "2024";
@@ -204,10 +214,7 @@ export default function App() {
   );
 
   const heading = getSectionHeading(section);
-
-  /* =========================
-     LOADING
-  ========================= */
+  const showMap = MAP_DETAILS.includes(detail);
 
   if (loading) {
     return (
@@ -220,10 +227,6 @@ export default function App() {
       </div>
     );
   }
-
-  /* =========================
-     UI
-  ========================= */
 
   return (
     <div className="app-shell">
@@ -239,7 +242,6 @@ export default function App() {
       />
 
       <main className="page-wrap app-main">
-
         <MotionSection delay={0.05}>
           <section className="section-space">
             <div className="panel panel-section">
@@ -283,12 +285,19 @@ export default function App() {
 
             <section className="content-grid section-space">
               <div className="panel panel-section">
-                <MapPanel
-                  section={section}
-                  detail={detail}
-                  rows={rows}
-                  metric={metric}
-                />
+                {showMap ? (
+                  <MapPanel
+                    section={section}
+                    detail={detail}
+                    rows={rows}
+                    metric={metric}
+                  />
+                ) : (
+                  <RankingList
+                    rows={ranking}
+                    metric={metric}
+                  />
+                )}
               </div>
 
               <div className="panel panel-section">
