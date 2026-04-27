@@ -1,137 +1,388 @@
-// src/components/AnimatedCounter.jsx
+/* =====================================
+   RESET
+===================================== */
 
-import { useEffect, useMemo, useRef, useState } from "react";
-
-function easeOutCubic(t) {
-  return 1 - Math.pow(1 - t, 3);
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-function extractNumber(value) {
-  if (typeof value === "number" && Number.isFinite(value)) return value;
-  if (typeof value !== "string") return null;
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
 
-  const cleaned = value
-    .trim()
-    .replace(/\s/g, "")
-    .replace(/[^\d.,-]/g, "");
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: #0b1f2a;
+  color: #0f172a;
+}
 
-  if (!cleaned) return null;
+/* =====================================
+   LAYOUT
+===================================== */
 
-  const hasComma = cleaned.includes(",");
-  const hasDot = cleaned.includes(".");
+.app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(122, 201, 67, 0.12), transparent 30%),
+    linear-gradient(180deg, #0b1f2a 0%, #0e2a38 100%);
+}
 
-  let normalized = cleaned;
+.page-wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
 
-  if (hasComma && hasDot) {
-    normalized = cleaned.replace(/\./g, "").replace(",", ".");
-  } else if (hasComma) {
-    normalized = cleaned.replace(",", ".");
+.section-space {
+  margin-top: 28px;
+}
+
+/* =====================================
+   TYPOGRAPHY
+===================================== */
+
+.eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.panel-title {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.panel-text {
+  color: #64748b;
+}
+
+/* =====================================
+   HEADER
+===================================== */
+
+.institutional-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255,255,255,0.95);
+  border-bottom: 1px solid #e6edf2;
+  backdrop-filter: blur(10px);
+}
+
+.institutional-header__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.institutional-brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.institutional-brand__logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.institutional-brand__title {
+  font-weight: 800;
+}
+
+.institutional-brand__subtitle {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.institutional-pill {
+  background: #eaf7e3;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+/* =====================================
+   HERO
+===================================== */
+
+.narrative-hero {
+  margin: 30px 0;
+  padding: 40px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #0f3b4c, #1d6a7d);
+  color: white;
+}
+
+.narrative-hero__title {
+  font-size: 40px;
+  font-weight: 800;
+}
+
+.narrative-hero__stats {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 12px;
+}
+
+/* =====================================
+   STICKY NAV
+===================================== */
+
+.sticky-nav {
+  position: sticky;
+  top: 70px;
+  background: rgba(11,31,42,0.9);
+  z-index: 40;
+}
+
+.sticky-nav__btn {
+  color: white;
+}
+
+/* =====================================
+   FILTERS PRO
+===================================== */
+
+.filters-bar {
+  display: grid;
+  grid-template-columns: 1.2fr repeat(3,1fr);
+  gap: 16px;
+}
+
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-pill {
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filter-pill.is-active {
+  background: #0f3b4c;
+  color: white;
+}
+
+/* =====================================
+   KPI CARDS PRO+
+===================================== */
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+  gap: 18px;
+}
+
+.kpi-card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+}
+
+.kpi-card.is-featured {
+  transform: scale(1.03);
+}
+
+.kpi-icon {
+  margin-right: 6px;
+}
+
+.kpi-value {
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.kpi-note {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.kpi-accent-line {
+  height: 4px;
+  background: linear-gradient(90deg,#7ac943,#1d6a7d);
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 0;
+}
+
+/* =====================================
+   COMPARE PANEL
+===================================== */
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 18px;
+}
+
+.compare-card {
+  padding: 20px;
+  border: 1px solid #e6edf2;
+  border-radius: 16px;
+  position: relative;
+}
+
+.compare-card::before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.compare-card--up::before { background: #16a34a; }
+.compare-card--down::before { background: #dc2626; }
+
+.compare-current {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+/* =====================================
+   RANKING PRO
+===================================== */
+
+.premium-ranking-item {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.ranking-bar__fill {
+  height: 8px;
+  background: linear-gradient(90deg,#7ac943,#1d6a7d);
+}
+
+/* =====================================
+   DATA TABLE PRO
+===================================== */
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.premium-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.premium-data-table th {
+  background: #f8fafc;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.premium-data-table td {
+  border-bottom: 1px solid #e6edf2;
+}
+
+.premium-data-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+/* =====================================
+   MAP PANEL
+===================================== */
+
+.map-shell {
+  position: relative;
+}
+
+.map-legend {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  z-index: 1000;
+}
+
+.map-legend__dot {
+  display: inline-block;
+  border-radius: 50%;
+  background: #2f7a6c;
+}
+
+.map-legend__dot--sm { width: 6px; height: 6px; }
+.map-legend__dot--md { width: 10px; height: 10px; }
+.map-legend__dot--lg { width: 14px; height: 14px; }
+
+.map-fallback {
+  padding: 20px;
+  background: #f8fafc;
+  text-align: center;
+}
+
+/* =====================================
+   MOTION
+===================================== */
+
+.motion-section {
+  animation: fadeIn 0.5s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================
+   EMPTY STATE
+===================================== */
+
+.empty-state {
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  text-align: center;
+  color: #64748b;
+}
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media (max-width: 960px) {
+  .filters-bar {
+    grid-template-columns: 1fr;
   }
 
-  const parsed = Number(normalized);
-
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-function getDecimals(num) {
-  if (!Number.isFinite(num)) return 0;
-
-  const text = String(num);
-  return text.includes(".") ? text.split(".")[1].length : 0;
-}
-
-function prefersReducedMotion() {
-  if (typeof window === "undefined") return false;
-
-  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-}
-
-export default function AnimatedCounter({
-  value,
-  duration = 1200,
-  locale = "es-ES"
-}) {
-  const numericValue = useMemo(() => extractNumber(value), [value]);
-
-  const decimals = useMemo(
-    () => (numericValue !== null ? getDecimals(numericValue) : 0),
-    [numericValue]
-  );
-
-  const [display, setDisplay] = useState(
-    numericValue !== null ? numericValue : value
-  );
-
-  const frameRef = useRef(null);
-  const previousValueRef = useRef(
-    numericValue !== null ? numericValue : 0
-  );
-
-  useEffect(() => {
-    if (frameRef.current) {
-      cancelAnimationFrame(frameRef.current);
-    }
-
-    if (numericValue === null) {
-      setDisplay(value);
-      return;
-    }
-
-    if (prefersReducedMotion()) {
-      setDisplay(numericValue);
-      previousValueRef.current = numericValue;
-      return;
-    }
-
-    const startValue =
-      typeof previousValueRef.current === "number"
-        ? previousValueRef.current
-        : 0;
-
-    const endValue = numericValue;
-    const startTime = performance.now();
-
-    function frame(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = easeOutCubic(progress);
-
-      const current = startValue + (endValue - startValue) * eased;
-
-      const rounded =
-        decimals > 0
-          ? Number(current.toFixed(decimals))
-          : Math.round(current);
-
-      setDisplay(rounded);
-
-      if (progress < 1) {
-        frameRef.current = requestAnimationFrame(frame);
-      } else {
-        setDisplay(endValue);
-        previousValueRef.current = endValue;
-      }
-    }
-
-    frameRef.current = requestAnimationFrame(frame);
-
-    return () => {
-      if (frameRef.current) {
-        cancelAnimationFrame(frameRef.current);
-      }
-    };
-  }, [numericValue, value, duration, decimals]);
-
-  if (numericValue === null) {
-    return <span>{value}</span>;
+  .narrative-hero__stats {
+    grid-template-columns: repeat(2,1fr);
   }
+}
 
-  return (
-    <span>
-      {Number(display).toLocaleString(locale, {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals
-      })}
-    </span>
-  );
+@media (max-width: 640px) {
+  .narrative-hero__stats {
+    grid-template-columns: 1fr;
+  }
 }
