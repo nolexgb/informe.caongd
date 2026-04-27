@@ -344,4 +344,105 @@ body {
   .narrative-hero__stats {
     grid-template-columns: 1fr;
   }
+   /* =====================================
+   FILTERS BAR (PRO)
+===================================== */
+
+.filters-bar {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: end;
+}
+
+/* BLOQUE INTRO */
+
+.filters-bar__intro {
+  max-width: 420px;
+}
+
+.filters-bar__title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.filters-bar__text {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* ITEMS */
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-item label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* CONTROL */
+
+.filter-control {
+  position: relative;
+}
+
+.filter-control select {
+  width: 100%;
+  appearance: none;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* HOVER / FOCUS */
+
+.filter-control select:hover {
+  border-color: #cbd5f5;
+}
+
+.filter-control select:focus {
+  outline: none;
+  border-color: #7ac943;
+  box-shadow: 0 0 0 3px rgba(122, 201, 67, 0.15);
+}
+
+/* ICONO SELECT (fake arrow) */
+
+.filter-control::after {
+  content: "▾";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media (max-width: 1024px) {
+  .filters-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-bar__intro {
+    margin-bottom: 10px;
+  }
 }
