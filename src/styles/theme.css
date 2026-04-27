@@ -1,345 +1,137 @@
-/* =====================================
-   RESET
-===================================== */
+// src/components/AnimatedCounter.jsx
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+import { useEffect, useMemo, useRef, useState } from "react";
+
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
 }
 
-html,
-body,
-#root {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-}
+function extractNumber(value) {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value !== "string") return null;
 
-body {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-  background: #0b1f2a;
-  color: #0f172a;
-}
+  const cleaned = value
+    .trim()
+    .replace(/\s/g, "")
+    .replace(/[^\d.,-]/g, "");
 
-/* =====================================
-   LAYOUT
-===================================== */
+  if (!cleaned) return null;
 
-.app-shell {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at top right, rgba(122, 201, 67, 0.12), transparent 30%),
-    linear-gradient(180deg, #0b1f2a 0%, #0e2a38 100%);
-}
+  const hasComma = cleaned.includes(",");
+  const hasDot = cleaned.includes(".");
 
-.page-wrap {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
+  let normalized = cleaned;
 
-.app-main {
-  padding-bottom: 80px;
-}
-
-.section-space {
-  margin-top: 28px;
-}
-
-/* =====================================
-   TYPOGRAPHY
-===================================== */
-
-.eyebrow {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #94a3b8;
-  font-weight: 800;
-}
-
-.panel-title {
-  margin: 6px 0 0;
-  font-size: 26px;
-  font-weight: 800;
-}
-
-.panel-text {
-  margin-top: 8px;
-  color: #64748b;
-  font-size: 14px;
-}
-
-/* =====================================
-   HEADER
-===================================== */
-
-.institutional-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(255,255,255,0.94);
-  border-bottom: 1px solid #e6edf2;
-  backdrop-filter: blur(12px);
-}
-
-.institutional-header__inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
-}
-
-.institutional-brand {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
-
-.institutional-brand__logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.institutional-brand__logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.institutional-brand__title {
-  font-weight: 800;
-}
-
-.institutional-brand__subtitle {
-  font-size: 12px;
-  color: #64748b;
-}
-
-.institutional-pill {
-  background: #eaf7e3;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-/* =====================================
-   HERO
-===================================== */
-
-.narrative-hero {
-  margin: 32px 0;
-  padding: 40px;
-  border-radius: 28px;
-  background: linear-gradient(135deg, #0f3b4c, #1d6a7d);
-  color: white;
-}
-
-.narrative-hero__title {
-  font-size: 42px;
-  font-weight: 800;
-}
-
-.narrative-hero__subtitle {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.narrative-hero__stats {
-  margin-top: 24px;
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 12px;
-}
-
-.narrative-hero__stat {
-  background: rgba(255,255,255,0.1);
-  padding: 14px;
-  border-radius: 14px;
-}
-
-/* =====================================
-   FILTERS PILLS
-===================================== */
-
-.filters-bar {
-  display: grid;
-  grid-template-columns: 1.2fr repeat(3,1fr);
-  gap: 20px;
-}
-
-.filter-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: #64748b;
-}
-
-.filter-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.filter-pill {
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  padding: 8px 12px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.filter-pill.is-active {
-  background: #0f3b4c;
-  color: white;
-}
-
-/* =====================================
-   KPI CARDS PRO+
-===================================== */
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
-  gap: 18px;
-}
-
-.kpi-card {
-  position: relative;
-  min-height: 170px;
-  transition: all 0.25s ease;
-}
-
-.kpi-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 25px 60px rgba(0,0,0,0.12);
-}
-
-.kpi-card.is-featured {
-  transform: scale(1.02);
-  background: linear-gradient(135deg,#fff,#f8fbf7);
-}
-
-.kpi-icon {
-  margin-right: 6px;
-  opacity: 0.7;
-}
-
-.kpi-badge {
-  font-size: 11px;
-  background: #eaf7e3;
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-weight: 700;
-}
-
-.kpi-value {
-  font-size: 36px;
-  font-weight: 900;
-  margin-top: 12px;
-}
-
-.kpi-note {
-  font-size: 13px;
-  color: #64748b;
-  margin-top: 8px;
-}
-
-.kpi-accent-line {
-  position: absolute;
-  bottom: 0;
-  left: 20px;
-  right: 20px;
-  height: 4px;
-  background: linear-gradient(90deg,#7ac943,#1d6a7d);
-}
-
-/* =====================================
-   COMPARE PANEL PRO
-===================================== */
-
-.compare-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-  gap: 18px;
-}
-
-.compare-card {
-  position: relative;
-  padding: 20px;
-  border-radius: 16px;
-  border: 1px solid #e6edf2;
-}
-
-.compare-card--up::before {
-  background: #16a34a;
-}
-
-.compare-card--down::before {
-  background: #dc2626;
-}
-
-.compare-card::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-}
-
-.compare-current {
-  font-size: 28px;
-  font-weight: 800;
-}
-
-.compare-delta.up { color: #16a34a; }
-.compare-delta.down { color: #dc2626; }
-
-.compare-status {
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 999px;
-}
-
-/* =====================================
-   TABLE
-===================================== */
-
-.premium-data-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.premium-data-table td,
-.premium-data-table th {
-  padding: 10px;
-  border-bottom: 1px solid #e6edf2;
-}
-
-/* =====================================
-   RESPONSIVE
-===================================== */
-
-@media (max-width: 960px) {
-  .filters-bar {
-    grid-template-columns: 1fr;
+  if (hasComma && hasDot) {
+    normalized = cleaned.replace(/\./g, "").replace(",", ".");
+  } else if (hasComma) {
+    normalized = cleaned.replace(",", ".");
   }
 
-  .narrative-hero__stats {
-    grid-template-columns: repeat(2,1fr);
-  }
+  const parsed = Number(normalized);
+
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
-@media (max-width: 640px) {
-  .narrative-hero__stats {
-    grid-template-columns: 1fr;
+function getDecimals(num) {
+  if (!Number.isFinite(num)) return 0;
+
+  const text = String(num);
+  return text.includes(".") ? text.split(".")[1].length : 0;
+}
+
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+}
+
+export default function AnimatedCounter({
+  value,
+  duration = 1200,
+  locale = "es-ES"
+}) {
+  const numericValue = useMemo(() => extractNumber(value), [value]);
+
+  const decimals = useMemo(
+    () => (numericValue !== null ? getDecimals(numericValue) : 0),
+    [numericValue]
+  );
+
+  const [display, setDisplay] = useState(
+    numericValue !== null ? numericValue : value
+  );
+
+  const frameRef = useRef(null);
+  const previousValueRef = useRef(
+    numericValue !== null ? numericValue : 0
+  );
+
+  useEffect(() => {
+    if (frameRef.current) {
+      cancelAnimationFrame(frameRef.current);
+    }
+
+    if (numericValue === null) {
+      setDisplay(value);
+      return;
+    }
+
+    if (prefersReducedMotion()) {
+      setDisplay(numericValue);
+      previousValueRef.current = numericValue;
+      return;
+    }
+
+    const startValue =
+      typeof previousValueRef.current === "number"
+        ? previousValueRef.current
+        : 0;
+
+    const endValue = numericValue;
+    const startTime = performance.now();
+
+    function frame(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutCubic(progress);
+
+      const current = startValue + (endValue - startValue) * eased;
+
+      const rounded =
+        decimals > 0
+          ? Number(current.toFixed(decimals))
+          : Math.round(current);
+
+      setDisplay(rounded);
+
+      if (progress < 1) {
+        frameRef.current = requestAnimationFrame(frame);
+      } else {
+        setDisplay(endValue);
+        previousValueRef.current = endValue;
+      }
+    }
+
+    frameRef.current = requestAnimationFrame(frame);
+
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+    };
+  }, [numericValue, value, duration, decimals]);
+
+  if (numericValue === null) {
+    return <span>{value}</span>;
   }
+
+  return (
+    <span>
+      {Number(display).toLocaleString(locale, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      })}
+    </span>
+  );
 }
