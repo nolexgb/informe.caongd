@@ -31,10 +31,6 @@ function topLabel(rows = [], metric = "investment_eur") {
   return best?.name || null;
 }
 
-/* =====================================
-   NARRATIVE
-===================================== */
-
 export function buildNarrative(data, section) {
   if (!data) return null;
 
@@ -56,7 +52,7 @@ export function buildNarrative(data, section) {
 
       text:
         data?.andalusia_work?.tool_intro?.summary ||
-        "Explora automáticamente las cifras clave del trabajo en Andalucía mediante una lectura territorial, temática e institucional.",
+        "Explora automáticamente las cifras clave del trabajo en Andalucía mediante una lectura territorial",
 
       stats: [
         {
@@ -175,10 +171,10 @@ export function buildNarrative(data, section) {
 
   return {
     title:
-      "Sistema premium de publicación de datos CAONGD",
+      "Sistema publicación de datos de la Coordinadora Andaluza de ONGD",
 
     subtitle:
-      "Plataforma interactiva institucional",
+      "Plataforma interactiva",
 
     text:
       "Visualiza, compara y explora los datos del informe anual mediante una experiencia integrada de narrativa, mapas, rankings, filtros y tablas.",
@@ -211,10 +207,6 @@ export function buildNarrative(data, section) {
     ]
   };
 }
-
-/* =====================================
-   KPI CARDS
-===================================== */
 
 export function buildCards(data, section) {
   if (section === "andalucia") {
@@ -368,10 +360,6 @@ export function buildCards(data, section) {
   ];
 }
 
-/* =====================================
-   ROWS
-===================================== */
-
 export function buildRows(data, section, detail) {
   if (!data) return [];
 
@@ -466,10 +454,6 @@ export function buildRows(data, section, detail) {
   return data?.andalusia_work?.areas || [];
 }
 
-/* =====================================
-   TABLE
-===================================== */
-
 export function buildTableColumns(
   section,
   detail,
@@ -526,10 +510,6 @@ export function buildTableColumns(
         : "text"
   }));
 }
-
-/* =====================================
-   RANKING
-===================================== */
 
 export function buildTopRanking(
   rows,
