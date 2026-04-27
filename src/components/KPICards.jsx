@@ -3,37 +3,48 @@
 import { formatValue } from "../utils/format";
 import MotionSection from "./MotionSection";
 
+function getKpiTone(index) {
+  const tones = ["primary", "green", "blue", "slate"];
+  return tones[index % tones.length];
+}
+
 export default function KPICards({ cards = [] }) {
   if (!cards.length) return null;
 
   return (
-    <section className="kpi-grid section-space">
+    <section className="kpi-grid section-space" aria-label="Indicadores principales">
       {cards.map((card, index) => {
         const featured = index === 0;
+        const tone = getKpiTone(index);
 
         return (
-          <MotionSection
-            key={card.label}
-            delay={index * 0.05}
-          >
+          <MotionSection key={card.label} delay={index * 0.05}>
             <article
-              className={`kpi-card panel premium-kpi-card ${
-                featured ? "is-featured" : ""
-              }`}
+              className={[
+                "kpi-card",
+                "panel",
+                "premium-kpi-card",
+                featured ? "is-featured" : "",
+                `kpi-card--${tone}`
+              ]
+                .filter(Boolean)
+                .join(" ")}
             >
               <div className="kpi-topline">
-                <span className="eyebrow">
-                  {card.label}
-                </span>
+                <span className="eyebrow">{card.label}</span>
+
+                {featured ? (
+                  <span className="kpi-badge">Indicador clave</span>
+                ) : null}
               </div>
 
               <div className="kpi-value premium-kpi-value">
                 {formatValue(card.value, card.type)}
               </div>
 
-              <p className="kpi-note premium-kpi-note">
-                {card.note}
-              </p>
+              {card.note ? (
+                <p className="kpi-note premium-kpi-note">{card.note}</p>
+              ) : null}
 
               <div className="kpi-accent-line" />
             </article>
