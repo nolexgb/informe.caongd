@@ -13,6 +13,8 @@ import {
   formatValue
 } from "../utils/format";
 
+const GEO_DETAILS = ["provinces", "countries", "regions"];
+
 function getMapConfig(section) {
   if (section === "andalucia") {
     return {
@@ -26,8 +28,6 @@ function getMapConfig(section) {
     zoom: 2
   };
 }
-
-const GEO_DETAILS = ["provinces", "countries", "regions"];
 
 function getMetricLabel(metric) {
   switch (metric) {
@@ -49,9 +49,18 @@ function getMetricLabel(metric) {
 }
 
 function getMetricType(metric) {
-  return metric === "investment_eur"
-    ? "currency"
-    : "number";
+  return metric === "investment_eur" ? "currency" : "number";
+}
+
+function getPointValue(row, metric) {
+  return (
+    row?.[metric] ??
+    row?.investment_eur ??
+    row?.projects ??
+    row?.people ??
+    row?.total ??
+    1
+  );
 }
 
 export default function MapPanel({
@@ -77,19 +86,14 @@ export default function MapPanel({
 
   const points = rows
     .map((row) => {
-      const coords = getCoords(row.name);
-      if (!coords) return null;
+      const coords = getCoords(row?.name);
 
-      const value =
-        row[metric] ??
-        row.projects ??
-        row.total ??
-        1;
+      if (!coords) return null;
 
       return {
         ...row,
         coords,
-        value
+        value: getPointValue(row, metric)
       };
     })
     .filter(Boolean);
@@ -107,8 +111,10 @@ export default function MapPanel({
     );
   }
 
-  const maxValue =
-    Math.max(...points.map((point) => point.value), 1);
+  const maxValue = Math.max(
+    ...points.map((point) => Number(point.value) || 0),
+    1
+  );
 
   const metricLabel = getMetricLabel(metric);
   const metricType = getMetricType(metric);
@@ -136,7 +142,7 @@ export default function MapPanel({
       <MapContainer
         center={config.center}
         zoom={config.zoom}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
         className="leaflet-map"
       >
         <TileLayer
@@ -145,18 +151,20 @@ export default function MapPanel({
         />
 
         {points.map((row) => {
+          const numericValue = Number(row.value) || 0;
+
           const radius = normalizeMetric(
-            row.value,
+            numericValue,
             8,
             28
           );
 
           const opacity =
-            0.42 + (row.value / maxValue) * 0.42;
+            0.42 + (numericValue / maxValue) * 0.42;
 
           return (
             <CircleMarker
-              key={row.name}
+              key={`${row.name}-${numericValue}`}
               center={row.coords}
               radius={radius}
               pathOptions={{
@@ -175,7 +183,7 @@ export default function MapPanel({
                   <div className="map-popup__metric">
                     <span>{metricLabel}</span>
                     <strong>
-                      {formatValue(row.value, metricType)}
+                      {formatValue(numericValue, metricType)}
                     </strong>
                   </div>
                 </div>
