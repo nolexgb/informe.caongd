@@ -1,326 +1,76 @@
 /* =====================================
-   RESET
-===================================== */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-}
-
-body {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-  background: #0b1f2a;
-  color: #0f172a;
-}
-
-/* =====================================
-   LAYOUT
-===================================== */
-
-.app-shell {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at top right, rgba(122, 201, 67, 0.12), transparent 30%),
-    linear-gradient(180deg, #0b1f2a 0%, #0e2a38 100%);
-}
-
-.page-wrap {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.section-space {
-  margin-top: 28px;
-}
-
-/* =====================================
-   HEADER PRO
-===================================== */
-
-.institutional-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-}
-
-.institutional-header__inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 0;
-}
-
-.institutional-brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.institutional-brand__logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
-  padding: 6px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-
-.institutional-brand__logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.institutional-brand__title {
-  font-size: 15px;
-  font-weight: 800;
-}
-
-.institutional-brand__subtitle {
-  font-size: 12px;
-  color: #64748b;
-}
-
-.institutional-pill {
-  font-size: 12px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #eaf7e3, #d9f2cc);
-  padding: 6px 12px;
-  border-radius: 999px;
-}
-
-/* =====================================
-   HERO
+   HERO TYPOGRAPHY PREMIUM
 ===================================== */
 
 .narrative-hero {
-  margin: 30px 0;
-  padding: 40px;
-  border-radius: 24px;
-  background: linear-gradient(135deg,#0f3b4c,#1d6a7d);
-  color: white;
+  user-select: none;
+  padding: 52px 56px;
+}
+
+.narrative-hero__eyebrow {
+  display: inline-flex;
+  margin-bottom: 18px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .narrative-hero__title {
-  font-size: 40px;
-  font-weight: 800;
+  max-width: 980px;
+  margin: 0;
+  font-size: clamp(38px, 4.8vw, 58px);
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.narrative-hero__subtitle {
+  max-width: 720px;
+  margin-top: 22px;
+  font-size: clamp(18px, 1.8vw, 23px);
+  line-height: 1.35;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.narrative-hero__text {
+  max-width: 780px;
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.75;
+  font-weight: 450;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .narrative-hero__stats {
-  margin-top: 20px;
+  margin-top: 34px;
   display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 12px;
-}
-
-/* =====================================
-   NAV PRO (MEJORADO)
-===================================== */
-
-.sticky-nav {
-  position: sticky;
-  top: 70px;
-  z-index: 40;
-  background: rgba(11,31,42,0.85);
-  backdrop-filter: blur(10px);
-}
-
-.sticky-nav__inner {
-  display: flex;
-  gap: 10px;
-  padding: 10px 0;
-}
-
-.sticky-nav__btn {
-  border: none;
-  background: rgba(255,255,255,0.08);
-  color: #cbd5f5;
-  padding: 8px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.sticky-nav__btn.is-active {
-  background: #7ac943;
-  color: #0b1f2a;
-}
-
-/* =====================================
-   FILTERS
-===================================== */
-
-.filters-bar {
-  display: grid;
-  grid-template-columns: 1.2fr repeat(3,1fr);
-  gap: 16px;
-}
-
-.filter-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.filter-pill {
-  border: 1px solid #e2e8f0;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.filter-pill.is-active {
-  background: #0f3b4c;
-  color: white;
-}
-
-/* =====================================
-   KPI
-===================================== */
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
 
-.kpi-card {
-  background: white;
-  padding: 20px;
-  border-radius: 16px;
-  position: relative;
-  transition: all .25s;
+.narrative-hero__stat {
+  padding: 18px 18px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.085);
+  border: 1px solid rgba(255,255,255,0.12);
 }
 
-.kpi-card:hover {
-  transform: translateY(-4px);
-}
-
-.kpi-value {
-  font-size: 34px;
+.narrative-hero__stat-value {
+  font-size: clamp(24px, 2.4vw, 34px);
+  line-height: 1;
   font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #ffffff;
 }
 
-.kpi-accent-line {
-  height: 4px;
-  background: linear-gradient(90deg,#7ac943,#1d6a7d);
-  position: absolute;
-  bottom: 0;
-  left: 20px;
-  right: 20px;
-}
-
-/* =====================================
-   COMPARE
-===================================== */
-
-.compare-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-  gap: 18px;
-}
-
-.compare-card {
-  padding: 20px;
-  border-radius: 16px;
-  border: 1px solid #e6edf2;
-}
-
-.compare-current {
-  font-size: 28px;
-  font-weight: 800;
-}
-
-/* =====================================
-   RANKING
-===================================== */
-
-.premium-ranking-item {
-  display: grid;
-  grid-template-columns: 40px 1fr auto;
-  gap: 10px;
-  align-items: center;
-}
-
-.ranking-bar__fill {
-  height: 8px;
-  background: linear-gradient(90deg,#7ac943,#1d6a7d);
-}
-
-/* =====================================
-   TABLE
-===================================== */
-
-.table-wrap {
-  overflow-x: auto;
-}
-
-.premium-data-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.premium-data-table th {
-  background: #f8fafc;
-  font-size: 11px;
-}
-
-.premium-data-table td {
-  border-bottom: 1px solid #e6edf2;
-}
-
-/* =====================================
-   MAP
-===================================== */
-
-.map-legend {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: white;
-  padding: 10px;
-  border-radius: 12px;
-  font-size: 12px;
-}
-
-/* =====================================
-   MOTION
-===================================== */
-
-.motion-section {
-  animation: fadeIn .5s ease both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* =====================================
-   RESPONSIVE
-===================================== */
-
-@media (max-width: 960px) {
-  .filters-bar {
-    grid-template-columns: 1fr;
-  }
-
-  .narrative-hero__stats {
-    grid-template-columns: repeat(2,1fr);
-  }
+.narrative-hero__stat-label {
+  margin-top: 9px;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 650;
+  color: rgba(255,255,255,0.72);
 }
